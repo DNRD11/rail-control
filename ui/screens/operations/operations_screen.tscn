@@ -1,0 +1,163 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://ui/screens/operations/operations_screen.gd" id="1"]
+[ext_resource type="PackedScene" path="res://ui/components/rc_panel.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://ui/components/rc_kpi_tile.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://ui/components/rc_segmented_control.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://ui/components/rc_status_chip.tscn" id="5"]
+[ext_resource type="Script" path="res://ui/screens/operations/console_background.gd" id="6"]
+[ext_resource type="Script" path="res://ui/screens/operations/brand_mark.gd" id="7"]
+[ext_resource type="Script" path="res://ui/screens/operations/ops_incidents_view.gd" id="8"]
+[ext_resource type="Script" path="res://ui/screens/operations/ops_service_detail.gd" id="9"]
+[ext_resource type="Script" path="res://ui/screens/operations/ops_resources_strip.gd" id="10"]
+[ext_resource type="Script" path="res://ui/schematic/line_schematic.gd" id="11"]
+
+[node name="OperationsScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="Background" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("6")
+
+[node name="Margin" type="MarginContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Root" type="VBoxContainer" parent="Margin"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TopBar" parent="Margin/Root" instance=ExtResource("2")]
+unique_name_in_owner = true
+layout_mode = 2
+show_header = false
+compact = true
+content_horizontal = true
+content_separation = 14
+
+[node name="Brand" type="HBoxContainer" parent="Margin/Root/TopBar"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="Mark" type="Control" parent="Margin/Root/TopBar/Brand"]
+layout_mode = 2
+script = ExtResource("7")
+
+[node name="BrandText" type="VBoxContainer" parent="Margin/Root/TopBar/Brand"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="BrandTitle" type="Label" parent="Margin/Root/TopBar/Brand/BrandText"]
+layout_mode = 2
+theme_type_variation = &"LabelHeading"
+text = "CGO · MAD–BCN"
+
+[node name="BrandSub" type="Label" parent="Margin/Root/TopBar/Brand/BrandText"]
+layout_mode = 2
+theme_type_variation = &"LabelMuted"
+text = "Jornada de mañana"
+
+[node name="Clock" type="Label" parent="Margin/Root/TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"LabelClock"
+text = "07:42:15"
+
+[node name="Speed" parent="Margin/Root/TopBar" instance=ExtResource("4")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="Margin/Root/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="KpiQuality" parent="Margin/Root/TopBar" instance=ExtResource("3")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="KpiPerception" parent="Margin/Root/TopBar" instance=ExtResource("3")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="KpiResult" parent="Margin/Root/TopBar" instance=ExtResource("3")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="AlertCounter" parent="Margin/Root/TopBar" instance=ExtResource("5")]
+layout_mode = 2
+text = "1 alerta"
+state = 2
+strong = true
+
+[node name="Middle" type="HBoxContainer" parent="Margin/Root"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="IncidentsPanel" parent="Margin/Root/Middle" instance=ExtResource("2")]
+unique_name_in_owner = true
+layout_mode = 2
+title = "Incidencias"
+action_text = "1 activa"
+
+[node name="IncidentsView" type="VBoxContainer" parent="Margin/Root/Middle/IncidentsPanel"]
+layout_mode = 2
+script = ExtResource("8")
+
+[node name="SchematicPanel" parent="Margin/Root/Middle" instance=ExtResource("2")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+title = "Línea Madrid – Barcelona"
+action_text = "escala por km"
+
+[node name="Schematic" type="Control" parent="Margin/Root/Middle/SchematicPanel"]
+unique_name_in_owner = true
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("11")
+
+[node name="DetailPanel" parent="Margin/Root/Middle" instance=ExtResource("2")]
+unique_name_in_owner = true
+layout_mode = 2
+title = "Servicio"
+
+[node name="DetailView" type="VBoxContainer" parent="Margin/Root/Middle/DetailPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("9")
+
+[node name="ResourcesBar" parent="Margin/Root" instance=ExtResource("2")]
+unique_name_in_owner = true
+layout_mode = 2
+show_header = false
+compact = true
+content_horizontal = true
+
+[node name="ResourcesStrip" type="HBoxContainer" parent="Margin/Root/ResourcesBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("10")
