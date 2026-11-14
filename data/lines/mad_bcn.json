@@ -1,0 +1,133 @@
+{
+	"schema_version": 1,
+	"id": "line_mad_bcn",
+	"name": "LAV Madrid-Barcelona",
+	"stations": [
+		{
+			"id": "sta_mad",
+			"code": "MAD",
+			"name": "Madrid-Puerta de Atocha",
+			"km": 0,
+			"min_dwell_s": 120,
+			"min_turnaround_s": 1200,
+			"is_depot": true,
+			"schematic_label": "Madrid"
+		},
+		{
+			"id": "sta_gua",
+			"code": "GUA",
+			"name": "Guadalajara-Yebes",
+			"km": 56,
+			"min_dwell_s": 120,
+			"min_turnaround_s": 900,
+			"is_depot": false,
+			"schematic_label": "Guadalajara"
+		},
+		{
+			"id": "sta_cat",
+			"code": "CAT",
+			"name": "Calatayud",
+			"km": 221,
+			"min_dwell_s": 120,
+			"min_turnaround_s": 900,
+			"is_depot": false,
+			"schematic_label": "Calatayud"
+		},
+		{
+			"id": "sta_zar",
+			"code": "ZAR",
+			"name": "Zaragoza-Delicias",
+			"km": 307,
+			"min_dwell_s": 120,
+			"min_turnaround_s": 900,
+			"is_depot": true,
+			"schematic_label": "Zaragoza"
+		},
+		{
+			"id": "sta_lle",
+			"code": "LLE",
+			"name": "Lleida",
+			"km": 442,
+			"min_dwell_s": 120,
+			"min_turnaround_s": 900,
+			"is_depot": false,
+			"schematic_label": "Lleida"
+		},
+		{
+			"id": "sta_cta",
+			"code": "CTA",
+			"name": "Camp de Tarragona",
+			"km": 521,
+			"min_dwell_s": 120,
+			"min_turnaround_s": 900,
+			"is_depot": false,
+			"schematic_label": "Tarragona"
+		},
+		{
+			"id": "sta_bcn",
+			"code": "BCN",
+			"name": "Barcelona-Sants",
+			"km": 621,
+			"min_dwell_s": 120,
+			"min_turnaround_s": 1200,
+			"is_depot": true,
+			"schematic_label": "Barcelona"
+		}
+	],
+	"sections": [
+		{
+			"id": "sec_mad_gua",
+			"from": "sta_mad",
+			"to": "sta_gua",
+			"length_km": 56,
+			"run_time_s": 1020,
+			"stop_penalty_s": 180,
+			"track_count": 2
+		},
+		{
+			"id": "sec_gua_cat",
+			"from": "sta_gua",
+			"to": "sta_cat",
+			"length_km": 165,
+			"run_time_s": 2220,
+			"stop_penalty_s": 180,
+			"track_count": 2
+		},
+		{
+			"id": "sec_cat_zar",
+			"from": "sta_cat",
+			"to": "sta_zar",
+			"length_km": 86,
+			"run_time_s": 1260,
+			"stop_penalty_s": 180,
+			"track_count": 2
+		},
+		{
+			"id": "sec_zar_lle",
+			"from": "sta_zar",
+			"to": "sta_lle",
+			"length_km": 135,
+			"run_time_s": 1920,
+			"stop_penalty_s": 180,
+			"track_count": 2
+		},
+		{
+			"id": "sec_lle_cta",
+			"from": "sta_lle",
+			"to": "sta_cta",
+			"length_km": 79,
+			"run_time_s": 1140,
+			"stop_penalty_s": 180,
+			"track_count": 2
+		},
+		{
+			"id": "sec_cta_bcn",
+			"from": "sta_cta",
+			"to": "sta_bcn",
+			"length_km": 100,
+			"run_time_s": 1440,
+			"stop_penalty_s": 180,
+			"track_count": 2
+		}
+	]
+}

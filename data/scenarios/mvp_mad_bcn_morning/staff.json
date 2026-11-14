@@ -1,0 +1,127 @@
+{
+	"schema_version": 1,
+	"staff": [
+		{
+			"id": "stf_d01",
+			"name": "Lucía Marín",
+			"role": "DRIVER",
+			"base": "sta_mad",
+			"shift_start": "04:00",
+			"shift_end": "15:00",
+			"qualifications": [
+				"cls_s404"
+			],
+			"status": "AVAILABLE"
+		},
+		{
+			"id": "stf_d02",
+			"name": "Andrés Prieto",
+			"role": "DRIVER",
+			"base": "sta_mad",
+			"shift_start": "04:00",
+			"shift_end": "15:00",
+			"qualifications": [
+				"cls_s404"
+			],
+			"status": "AVAILABLE"
+		},
+		{
+			"id": "stf_d03",
+			"name": "Irene Solà",
+			"role": "DRIVER",
+			"base": "sta_bcn",
+			"shift_start": "04:00",
+			"shift_end": "15:00",
+			"qualifications": [
+				"cls_s404"
+			],
+			"status": "AVAILABLE"
+		},
+		{
+			"id": "stf_d04",
+			"name": "Raúl Cebrián",
+			"role": "DRIVER",
+			"base": "sta_zar",
+			"shift_start": "07:00",
+			"shift_end": "15:00",
+			"qualifications": [
+				"cls_s404"
+			],
+			"status": "AVAILABLE"
+		},
+		{
+			"id": "stf_d05",
+			"name": "Marta Vidal",
+			"role": "DRIVER",
+			"base": "sta_bcn",
+			"shift_start": "04:00",
+			"shift_end": "15:00",
+			"qualifications": [
+				"cls_s404"
+			],
+			"status": "AVAILABLE"
+		},
+		{
+			"id": "stf_d06",
+			"name": "Pablo Aranda",
+			"role": "DRIVER",
+			"base": "sta_zar",
+			"shift_start": "07:00",
+			"shift_end": "15:00",
+			"qualifications": [
+				"cls_s404"
+			],
+			"status": "AVAILABLE"
+		},
+		{
+			"id": "stf_c01",
+			"name": "Elena Roca",
+			"role": "CONDUCTOR",
+			"base": "sta_mad",
+			"shift_start": "04:00",
+			"shift_end": "15:00",
+			"qualifications": [],
+			"status": "AVAILABLE"
+		},
+		{
+			"id": "stf_c02",
+			"name": "Sergio Lamas",
+			"role": "CONDUCTOR",
+			"base": "sta_mad",
+			"shift_start": "04:00",
+			"shift_end": "15:00",
+			"qualifications": [],
+			"status": "AVAILABLE"
+		},
+		{
+			"id": "stf_c03",
+			"name": "Núria Pons",
+			"role": "CONDUCTOR",
+			"base": "sta_bcn",
+			"shift_start": "04:00",
+			"shift_end": "15:00",
+			"qualifications": [],
+			"status": "AVAILABLE"
+		},
+		{
+			"id": "stf_c04",
+			"name": "Hugo Beltrán",
+			"role": "CONDUCTOR",
+			"base": "sta_bcn",
+			"shift_start": "04:00",
+			"shift_end": "15:00",
+			"qualifications": [],
+			"status": "AVAILABLE"
+		},
+		{
+			"id": "stf_c05",
+			"name": "Carmen Ibáñez",
+			"role": "CONDUCTOR",
+			"base": "sta_mad",
+			"shift_start": "04:00",
+			"shift_end": "15:00",
+			"qualifications": [],
+			"status": "AVAILABLE"
+		}
+	]
+}

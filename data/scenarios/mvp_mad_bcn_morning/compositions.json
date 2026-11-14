@@ -1,0 +1,53 @@
+{
+	"schema_version": 1,
+	"compositions": [
+		{
+			"id": "cmp_c1",
+			"status": "ACTIVE",
+			"formed_at": "00:00",
+			"members": [
+				{
+					"vehicle": "veh_v1",
+					"position": 1
+				}
+			]
+		},
+		{
+			"id": "cmp_c2",
+			"status": "ACTIVE",
+			"formed_at": "00:00",
+			"members": [
+				{
+					"vehicle": "veh_v2",
+					"position": 1
+				}
+			]
+		},
+		{
+			"id": "cmp_c3",
+			"status": "ACTIVE",
+			"formed_at": "00:00",
+			"members": [
+				{
+					"vehicle": "veh_v3",
+					"position": 1
+				},
+				{
+					"vehicle": "veh_v4",
+					"position": 2
+				}
+			]
+		},
+		{
+			"id": "cmp_c4",
+			"status": "ACTIVE",
+			"formed_at": "00:00",
+			"members": [
+				{
+					"vehicle": "veh_v5",
+					"position": 1
+				}
+			]
+		}
+	]
+}

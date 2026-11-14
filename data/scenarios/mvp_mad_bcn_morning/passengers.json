@@ -1,0 +1,149 @@
+{
+	"schema_version": 1,
+	"passengers": [
+		{
+			"service": "svc_3101",
+			"booked": 290,
+			"boardings_by_stop": {
+				"0": 203,
+				"3": 87
+			},
+			"alightings_by_stop": {
+				"3": 0,
+				"6": 290
+			}
+		},
+		{
+			"service": "svc_3103",
+			"booked": 290,
+			"boardings_by_stop": {
+				"0": 203,
+				"1": 43,
+				"2": 44
+			},
+			"alightings_by_stop": {
+				"1": 0,
+				"2": 0,
+				"3": 290
+			}
+		},
+		{
+			"service": "svc_3105",
+			"booked": 290,
+			"boardings_by_stop": {
+				"0": 203,
+				"1": 43,
+				"2": 44
+			},
+			"alightings_by_stop": {
+				"1": 0,
+				"2": 0,
+				"3": 290
+			}
+		},
+		{
+			"service": "svc_3150",
+			"booked": 581,
+			"boardings_by_stop": {
+				"0": 406,
+				"1": 35,
+				"2": 35,
+				"3": 35,
+				"4": 35,
+				"5": 35
+			},
+			"alightings_by_stop": {
+				"1": 0,
+				"2": 0,
+				"3": 0,
+				"4": 0,
+				"5": 0,
+				"6": 581
+			}
+		},
+		{
+			"service": "svc_3152",
+			"booked": 290,
+			"boardings_by_stop": {
+				"0": 203,
+				"3": 87
+			},
+			"alightings_by_stop": {
+				"3": 0,
+				"6": 290
+			}
+		},
+		{
+			"service": "svc_3102",
+			"booked": 290,
+			"boardings_by_stop": {
+				"0": 203,
+				"3": 87
+			},
+			"alightings_by_stop": {
+				"3": 0,
+				"6": 290
+			}
+		},
+		{
+			"service": "svc_3107",
+			"booked": 581,
+			"boardings_by_stop": {
+				"0": 406,
+				"1": 35,
+				"2": 35,
+				"3": 35,
+				"4": 35,
+				"5": 35
+			},
+			"alightings_by_stop": {
+				"1": 0,
+				"2": 0,
+				"3": 0,
+				"4": 0,
+				"5": 0,
+				"6": 581
+			}
+		},
+		{
+			"service": "svc_3109",
+			"booked": 290,
+			"boardings_by_stop": {
+				"0": 203,
+				"3": 87
+			},
+			"alightings_by_stop": {
+				"3": 0,
+				"6": 290
+			}
+		},
+		{
+			"service": "svc_3106",
+			"booked": 290,
+			"boardings_by_stop": {
+				"0": 203,
+				"1": 43,
+				"2": 44
+			},
+			"alightings_by_stop": {
+				"1": 0,
+				"2": 0,
+				"3": 290
+			}
+		},
+		{
+			"service": "svc_3108",
+			"booked": 290,
+			"boardings_by_stop": {
+				"0": 203,
+				"1": 43,
+				"2": 44
+			},
+			"alightings_by_stop": {
+				"1": 0,
+				"2": 0,
+				"3": 290
+			}
+		}
+	]
+}

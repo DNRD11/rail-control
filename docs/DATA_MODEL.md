@@ -25,7 +25,7 @@ OperationalLog 1───* LogEntry (historial)
 | Entidad | Campos |
 |---|---|
 | `Line` | `id`, `name`, `station_ids: Array[StringName]` (orden canónico), `section_ids` |
-| `Station` | `id`, `code` (MAD…), `name`, `km: float`, `min_dwell_s`, `is_depot: bool`, `schematic_label` |
+| `Station` | `id`, `code` (MAD…), `name`, `km: float`, `min_dwell_s`, `min_turnaround_s`, `is_depot: bool`, `schematic_label` |
 | `Section` | `id`, `from_station_id`, `to_station_id`, `length_km`, `run_time_s` (sin parada), `stop_penalty_s` (pérdida por parar), `track_count` |
 
 El sentido se expresa como `Direction.ASCENDING` (orden de la línea, MAD→BCN) o `DESCENDING`. Una futura red con ramales usará varias `Line` que comparten `Station`; los servicios definen su itinerario como lista de paradas, no como «línea + sentido», para poder atravesar varias líneas.
@@ -45,7 +45,7 @@ El sentido se expresa como `Direction.ASCENDING` (orden de la línea, MAD→BCN)
 | `incident_ids` | `Array[StringName]` | historial de incidencias |
 | `origin_ref` | StringName | para servicios especiales: id del PAT que lo creó |
 
-**No hay campos de recurso en `Service`**. Las consultas «qué composición lleva» o «quién conduce ahora» se resuelven sobre las asignaciones: `world.assignments.active_for(service_id, type, at_stop_index)`.
+**No hay campos de recurso en `Service`**. Las consultas «qué composición lleva» o «quién conduce ahora» se resuelven sobre las asignaciones: `world.assignments.for_segment(service_id, type, segment)` (recursos que cubren un segmento) o `at_stop(service_id, type, stop_index)` (en un relevo aparecen ambos).
 
 ### `ServiceStop`
 

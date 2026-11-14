@@ -1,0 +1,311 @@
+{
+	"schema_version": 1,
+	"assignments": [
+		{
+			"id": "asg_3101_c1_06",
+			"service": "svc_3101",
+			"type": "COMPOSITION",
+			"resource": "cmp_c1",
+			"from_stop": 0,
+			"to_stop": 6
+		},
+		{
+			"id": "asg_3102_c1_06",
+			"service": "svc_3102",
+			"type": "COMPOSITION",
+			"resource": "cmp_c1",
+			"from_stop": 0,
+			"to_stop": 6
+		},
+		{
+			"id": "asg_3103_c2_03",
+			"service": "svc_3103",
+			"type": "COMPOSITION",
+			"resource": "cmp_c2",
+			"from_stop": 0,
+			"to_stop": 3
+		},
+		{
+			"id": "asg_3105_c2_03",
+			"service": "svc_3105",
+			"type": "COMPOSITION",
+			"resource": "cmp_c2",
+			"from_stop": 0,
+			"to_stop": 3
+		},
+		{
+			"id": "asg_3106_c2_03",
+			"service": "svc_3106",
+			"type": "COMPOSITION",
+			"resource": "cmp_c2",
+			"from_stop": 0,
+			"to_stop": 3
+		},
+		{
+			"id": "asg_3108_c2_03",
+			"service": "svc_3108",
+			"type": "COMPOSITION",
+			"resource": "cmp_c2",
+			"from_stop": 0,
+			"to_stop": 3
+		},
+		{
+			"id": "asg_3150_c3_06",
+			"service": "svc_3150",
+			"type": "COMPOSITION",
+			"resource": "cmp_c3",
+			"from_stop": 0,
+			"to_stop": 6
+		},
+		{
+			"id": "asg_3107_c3_06",
+			"service": "svc_3107",
+			"type": "COMPOSITION",
+			"resource": "cmp_c3",
+			"from_stop": 0,
+			"to_stop": 6
+		},
+		{
+			"id": "asg_3152_c4_06",
+			"service": "svc_3152",
+			"type": "COMPOSITION",
+			"resource": "cmp_c4",
+			"from_stop": 0,
+			"to_stop": 6
+		},
+		{
+			"id": "asg_3109_c4_06",
+			"service": "svc_3109",
+			"type": "COMPOSITION",
+			"resource": "cmp_c4",
+			"from_stop": 0,
+			"to_stop": 6
+		},
+		{
+			"id": "asg_3101_d01_03",
+			"service": "svc_3101",
+			"type": "DRIVER",
+			"resource": "stf_d01",
+			"from_stop": 0,
+			"to_stop": 3
+		},
+		{
+			"id": "asg_3101_d04_36",
+			"service": "svc_3101",
+			"type": "DRIVER",
+			"resource": "stf_d04",
+			"from_stop": 3,
+			"to_stop": 6
+		},
+		{
+			"id": "asg_3103_d02_03",
+			"service": "svc_3103",
+			"type": "DRIVER",
+			"resource": "stf_d02",
+			"from_stop": 0,
+			"to_stop": 3
+		},
+		{
+			"id": "asg_3105_d03_03",
+			"service": "svc_3105",
+			"type": "DRIVER",
+			"resource": "stf_d03",
+			"from_stop": 0,
+			"to_stop": 3
+		},
+		{
+			"id": "asg_3150_d03_03",
+			"service": "svc_3150",
+			"type": "DRIVER",
+			"resource": "stf_d03",
+			"from_stop": 0,
+			"to_stop": 3
+		},
+		{
+			"id": "asg_3150_d01_36",
+			"service": "svc_3150",
+			"type": "DRIVER",
+			"resource": "stf_d01",
+			"from_stop": 3,
+			"to_stop": 6
+		},
+		{
+			"id": "asg_3152_d05_03",
+			"service": "svc_3152",
+			"type": "DRIVER",
+			"resource": "stf_d05",
+			"from_stop": 0,
+			"to_stop": 3
+		},
+		{
+			"id": "asg_3152_d02_36",
+			"service": "svc_3152",
+			"type": "DRIVER",
+			"resource": "stf_d02",
+			"from_stop": 3,
+			"to_stop": 6
+		},
+		{
+			"id": "asg_3102_d04_03",
+			"service": "svc_3102",
+			"type": "DRIVER",
+			"resource": "stf_d04",
+			"from_stop": 0,
+			"to_stop": 3
+		},
+		{
+			"id": "asg_3102_d06_36",
+			"service": "svc_3102",
+			"type": "DRIVER",
+			"resource": "stf_d06",
+			"from_stop": 3,
+			"to_stop": 6
+		},
+		{
+			"id": "asg_3107_d01_03",
+			"service": "svc_3107",
+			"type": "DRIVER",
+			"resource": "stf_d01",
+			"from_stop": 0,
+			"to_stop": 3
+		},
+		{
+			"id": "asg_3107_d05_36",
+			"service": "svc_3107",
+			"type": "DRIVER",
+			"resource": "stf_d05",
+			"from_stop": 3,
+			"to_stop": 6
+		},
+		{
+			"id": "asg_3109_d02_03",
+			"service": "svc_3109",
+			"type": "DRIVER",
+			"resource": "stf_d02",
+			"from_stop": 0,
+			"to_stop": 3
+		},
+		{
+			"id": "asg_3109_d04_36",
+			"service": "svc_3109",
+			"type": "DRIVER",
+			"resource": "stf_d04",
+			"from_stop": 3,
+			"to_stop": 6
+		},
+		{
+			"id": "asg_3106_d03_03",
+			"service": "svc_3106",
+			"type": "DRIVER",
+			"resource": "stf_d03",
+			"from_stop": 0,
+			"to_stop": 3
+		},
+		{
+			"id": "asg_3108_d01_03",
+			"service": "svc_3108",
+			"type": "DRIVER",
+			"resource": "stf_d01",
+			"from_stop": 0,
+			"to_stop": 3
+		},
+		{
+			"id": "asg_3101_c01_06",
+			"service": "svc_3101",
+			"type": "CONDUCTOR",
+			"resource": "stf_c01",
+			"from_stop": 0,
+			"to_stop": 6,
+			"role": "CHIEF_CONDUCTOR"
+		},
+		{
+			"id": "asg_3101_c05_03",
+			"service": "svc_3101",
+			"type": "CONDUCTOR",
+			"resource": "stf_c05",
+			"from_stop": 0,
+			"to_stop": 3
+		},
+		{
+			"id": "asg_3102_c01_06",
+			"service": "svc_3102",
+			"type": "CONDUCTOR",
+			"resource": "stf_c01",
+			"from_stop": 0,
+			"to_stop": 6,
+			"role": "CHIEF_CONDUCTOR"
+		},
+		{
+			"id": "asg_3103_c02_03",
+			"service": "svc_3103",
+			"type": "CONDUCTOR",
+			"resource": "stf_c02",
+			"from_stop": 0,
+			"to_stop": 3,
+			"role": "CHIEF_CONDUCTOR"
+		},
+		{
+			"id": "asg_3105_c02_03",
+			"service": "svc_3105",
+			"type": "CONDUCTOR",
+			"resource": "stf_c02",
+			"from_stop": 0,
+			"to_stop": 3,
+			"role": "CHIEF_CONDUCTOR"
+		},
+		{
+			"id": "asg_3106_c02_03",
+			"service": "svc_3106",
+			"type": "CONDUCTOR",
+			"resource": "stf_c02",
+			"from_stop": 0,
+			"to_stop": 3,
+			"role": "CHIEF_CONDUCTOR"
+		},
+		{
+			"id": "asg_3108_c02_03",
+			"service": "svc_3108",
+			"type": "CONDUCTOR",
+			"resource": "stf_c02",
+			"from_stop": 0,
+			"to_stop": 3,
+			"role": "CHIEF_CONDUCTOR"
+		},
+		{
+			"id": "asg_3150_c03_06",
+			"service": "svc_3150",
+			"type": "CONDUCTOR",
+			"resource": "stf_c03",
+			"from_stop": 0,
+			"to_stop": 6,
+			"role": "CHIEF_CONDUCTOR"
+		},
+		{
+			"id": "asg_3107_c03_06",
+			"service": "svc_3107",
+			"type": "CONDUCTOR",
+			"resource": "stf_c03",
+			"from_stop": 0,
+			"to_stop": 6,
+			"role": "CHIEF_CONDUCTOR"
+		},
+		{
+			"id": "asg_3152_c04_06",
+			"service": "svc_3152",
+			"type": "CONDUCTOR",
+			"resource": "stf_c04",
+			"from_stop": 0,
+			"to_stop": 6,
+			"role": "CHIEF_CONDUCTOR"
+		},
+		{
+			"id": "asg_3109_c04_06",
+			"service": "svc_3109",
+			"type": "CONDUCTOR",
+			"resource": "stf_c04",
+			"from_stop": 0,
+			"to_stop": 6,
+			"role": "CHIEF_CONDUCTOR"
+		}
+	]
+}

@@ -1,0 +1,30 @@
+{
+	"schema_version": 1,
+	"id": "mvp_mad_bcn_morning",
+	"name": "Jornada de mañana — Madrid-Barcelona",
+	"description": "Diez servicios entre Madrid y Barcelona con una avería de material en el 3103.",
+	"line_ids": [
+		"line_mad_bcn"
+	],
+	"day_start": "06:00",
+	"day_end": "15:00",
+	"time_scale": 30,
+	"seed": 20260514,
+	"rules": {
+		"min_conductors_per_segment": 1,
+		"staff_connection_s": 600,
+		"transfer_s": 900
+	},
+	"scripted_incidents": [
+		{
+			"id": "inc_3103_failure",
+			"type": "ROLLING_STOCK_FAILURE",
+			"service": "svc_3103",
+			"enabled": true,
+			"section": "sec_cat_zar",
+			"fraction": 0.5,
+			"time": "08:12",
+			"severity": 2
+		}
+	]
+}

@@ -1,0 +1,407 @@
+{
+	"schema_version": 1,
+	"services": [
+		{
+			"id": "svc_3101",
+			"code": "3101",
+			"kind": "COMMERCIAL",
+			"origin": "sta_mad",
+			"destination": "sta_bcn",
+			"stops": [
+				{
+					"station": "sta_mad",
+					"type": "ORIGIN",
+					"dep": "06:30"
+				},
+				{
+					"station": "sta_gua",
+					"type": "PASS",
+					"time": "06:47"
+				},
+				{
+					"station": "sta_cat",
+					"type": "PASS",
+					"time": "07:24"
+				},
+				{
+					"station": "sta_zar",
+					"type": "STOP",
+					"arr": "07:48",
+					"dep": "07:50"
+				},
+				{
+					"station": "sta_lle",
+					"type": "PASS",
+					"time": "08:22"
+				},
+				{
+					"station": "sta_cta",
+					"type": "PASS",
+					"time": "08:41"
+				},
+				{
+					"station": "sta_bcn",
+					"type": "DESTINATION",
+					"arr": "09:05"
+				}
+			]
+		},
+		{
+			"id": "svc_3103",
+			"code": "3103",
+			"kind": "COMMERCIAL",
+			"origin": "sta_mad",
+			"destination": "sta_zar",
+			"stops": [
+				{
+					"station": "sta_mad",
+					"type": "ORIGIN",
+					"dep": "07:00"
+				},
+				{
+					"station": "sta_gua",
+					"type": "STOP",
+					"arr": "07:20",
+					"dep": "07:22"
+				},
+				{
+					"station": "sta_cat",
+					"type": "STOP",
+					"arr": "08:02",
+					"dep": "08:04"
+				},
+				{
+					"station": "sta_zar",
+					"type": "DESTINATION",
+					"arr": "08:25"
+				}
+			]
+		},
+		{
+			"id": "svc_3105",
+			"code": "3105",
+			"kind": "COMMERCIAL",
+			"origin": "sta_zar",
+			"destination": "sta_bcn",
+			"stops": [
+				{
+					"station": "sta_zar",
+					"type": "ORIGIN",
+					"dep": "08:55"
+				},
+				{
+					"station": "sta_lle",
+					"type": "STOP",
+					"arr": "09:30",
+					"dep": "09:32"
+				},
+				{
+					"station": "sta_cta",
+					"type": "STOP",
+					"arr": "09:54",
+					"dep": "09:56"
+				},
+				{
+					"station": "sta_bcn",
+					"type": "DESTINATION",
+					"arr": "10:20"
+				}
+			]
+		},
+		{
+			"id": "svc_3150",
+			"code": "3150",
+			"kind": "COMMERCIAL",
+			"origin": "sta_bcn",
+			"destination": "sta_mad",
+			"stops": [
+				{
+					"station": "sta_bcn",
+					"type": "ORIGIN",
+					"dep": "06:40"
+				},
+				{
+					"station": "sta_cta",
+					"type": "STOP",
+					"arr": "07:07",
+					"dep": "07:09"
+				},
+				{
+					"station": "sta_lle",
+					"type": "STOP",
+					"arr": "07:31",
+					"dep": "07:33"
+				},
+				{
+					"station": "sta_zar",
+					"type": "STOP",
+					"arr": "08:08",
+					"dep": "08:10"
+				},
+				{
+					"station": "sta_cat",
+					"type": "STOP",
+					"arr": "08:34",
+					"dep": "08:36"
+				},
+				{
+					"station": "sta_gua",
+					"type": "STOP",
+					"arr": "09:16",
+					"dep": "09:18"
+				},
+				{
+					"station": "sta_mad",
+					"type": "DESTINATION",
+					"arr": "09:35"
+				}
+			]
+		},
+		{
+			"id": "svc_3152",
+			"code": "3152",
+			"kind": "COMMERCIAL",
+			"origin": "sta_bcn",
+			"destination": "sta_mad",
+			"stops": [
+				{
+					"station": "sta_bcn",
+					"type": "ORIGIN",
+					"dep": "07:30"
+				},
+				{
+					"station": "sta_cta",
+					"type": "PASS",
+					"time": "07:54"
+				},
+				{
+					"station": "sta_lle",
+					"type": "PASS",
+					"time": "08:13"
+				},
+				{
+					"station": "sta_zar",
+					"type": "STOP",
+					"arr": "08:48",
+					"dep": "08:50"
+				},
+				{
+					"station": "sta_cat",
+					"type": "PASS",
+					"time": "09:11"
+				},
+				{
+					"station": "sta_gua",
+					"type": "PASS",
+					"time": "09:48"
+				},
+				{
+					"station": "sta_mad",
+					"type": "DESTINATION",
+					"arr": "10:05"
+				}
+			]
+		},
+		{
+			"id": "svc_3102",
+			"code": "3102",
+			"kind": "COMMERCIAL",
+			"origin": "sta_bcn",
+			"destination": "sta_mad",
+			"stops": [
+				{
+					"station": "sta_bcn",
+					"type": "ORIGIN",
+					"dep": "09:50"
+				},
+				{
+					"station": "sta_cta",
+					"type": "PASS",
+					"time": "10:14"
+				},
+				{
+					"station": "sta_lle",
+					"type": "PASS",
+					"time": "10:33"
+				},
+				{
+					"station": "sta_zar",
+					"type": "STOP",
+					"arr": "11:08",
+					"dep": "11:10"
+				},
+				{
+					"station": "sta_cat",
+					"type": "PASS",
+					"time": "11:31"
+				},
+				{
+					"station": "sta_gua",
+					"type": "PASS",
+					"time": "12:08"
+				},
+				{
+					"station": "sta_mad",
+					"type": "DESTINATION",
+					"arr": "12:25"
+				}
+			]
+		},
+		{
+			"id": "svc_3107",
+			"code": "3107",
+			"kind": "COMMERCIAL",
+			"origin": "sta_mad",
+			"destination": "sta_bcn",
+			"stops": [
+				{
+					"station": "sta_mad",
+					"type": "ORIGIN",
+					"dep": "10:15"
+				},
+				{
+					"station": "sta_gua",
+					"type": "STOP",
+					"arr": "10:35",
+					"dep": "10:37"
+				},
+				{
+					"station": "sta_cat",
+					"type": "STOP",
+					"arr": "11:17",
+					"dep": "11:19"
+				},
+				{
+					"station": "sta_zar",
+					"type": "STOP",
+					"arr": "11:43",
+					"dep": "11:45"
+				},
+				{
+					"station": "sta_lle",
+					"type": "STOP",
+					"arr": "12:20",
+					"dep": "12:22"
+				},
+				{
+					"station": "sta_cta",
+					"type": "STOP",
+					"arr": "12:44",
+					"dep": "12:46"
+				},
+				{
+					"station": "sta_bcn",
+					"type": "DESTINATION",
+					"arr": "13:10"
+				}
+			]
+		},
+		{
+			"id": "svc_3109",
+			"code": "3109",
+			"kind": "COMMERCIAL",
+			"origin": "sta_mad",
+			"destination": "sta_bcn",
+			"stops": [
+				{
+					"station": "sta_mad",
+					"type": "ORIGIN",
+					"dep": "10:45"
+				},
+				{
+					"station": "sta_gua",
+					"type": "PASS",
+					"time": "11:02"
+				},
+				{
+					"station": "sta_cat",
+					"type": "PASS",
+					"time": "11:39"
+				},
+				{
+					"station": "sta_zar",
+					"type": "STOP",
+					"arr": "12:03",
+					"dep": "12:05"
+				},
+				{
+					"station": "sta_lle",
+					"type": "PASS",
+					"time": "12:37"
+				},
+				{
+					"station": "sta_cta",
+					"type": "PASS",
+					"time": "12:56"
+				},
+				{
+					"station": "sta_bcn",
+					"type": "DESTINATION",
+					"arr": "13:20"
+				}
+			]
+		},
+		{
+			"id": "svc_3106",
+			"code": "3106",
+			"kind": "COMMERCIAL",
+			"origin": "sta_bcn",
+			"destination": "sta_zar",
+			"stops": [
+				{
+					"station": "sta_bcn",
+					"type": "ORIGIN",
+					"dep": "11:00"
+				},
+				{
+					"station": "sta_cta",
+					"type": "STOP",
+					"arr": "11:27",
+					"dep": "11:29"
+				},
+				{
+					"station": "sta_lle",
+					"type": "STOP",
+					"arr": "11:51",
+					"dep": "11:53"
+				},
+				{
+					"station": "sta_zar",
+					"type": "DESTINATION",
+					"arr": "12:25"
+				}
+			]
+		},
+		{
+			"id": "svc_3108",
+			"code": "3108",
+			"kind": "COMMERCIAL",
+			"origin": "sta_zar",
+			"destination": "sta_mad",
+			"stops": [
+				{
+					"station": "sta_zar",
+					"type": "ORIGIN",
+					"dep": "12:55"
+				},
+				{
+					"station": "sta_cat",
+					"type": "STOP",
+					"arr": "13:19",
+					"dep": "13:21"
+				},
+				{
+					"station": "sta_gua",
+					"type": "STOP",
+					"arr": "14:01",
+					"dep": "14:03"
+				},
+				{
+					"station": "sta_mad",
+					"type": "DESTINATION",
+					"arr": "14:20"
+				}
+			]
+		}
+	]
+}

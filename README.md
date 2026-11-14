@@ -4,7 +4,7 @@ Videojuego de simulación de gestión ferroviaria para Android (horizontal). El 
 
 Escenario inicial (MVP 0.1): **LAV Madrid-Barcelona** (7 estaciones), con datos operativos ficticios y simplificados.
 
-> Estado: **Fase 1 — diseño**. Todavía no hay juego jugable. Ver [docs/ROADMAP.md](docs/ROADMAP.md).
+> Estado: **Fase 2 — modelo y datos** completada (sin simulación todavía). Ver [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Requisitos
 
@@ -21,7 +21,7 @@ Escenario inicial (MVP 0.1): **LAV Madrid-Barcelona** (7 estaciones), con datos 
 # Ejecutar el juego (cuando exista escena principal)
 & "C:\Users\lozan\Godot_v4.7.2-stable_win64\Godot_v4.7.2-stable_win64.exe" --path .
 
-# Pruebas headless (desde la fase 2)
+# Pruebas headless (antes, una vez tras añadir clases: ... --headless --path . --import)
 & "C:\Users\lozan\Godot_v4.7.2-stable_win64\Godot_v4.7.2-stable_win64_console.exe" --headless --path . -s res://tests/run_tests.gd
 ```
 

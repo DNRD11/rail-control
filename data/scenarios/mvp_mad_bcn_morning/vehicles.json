@@ -1,0 +1,53 @@
+{
+	"schema_version": 1,
+	"vehicles": [
+		{
+			"id": "veh_v1",
+			"number": 4001,
+			"class": "cls_s404",
+			"status": "IN_SERVICE",
+			"location": "sta_mad",
+			"km_since_maintenance": 1200
+		},
+		{
+			"id": "veh_v2",
+			"number": 4002,
+			"class": "cls_s404",
+			"status": "IN_SERVICE",
+			"location": "sta_mad",
+			"km_since_maintenance": 2400
+		},
+		{
+			"id": "veh_v3",
+			"number": 4003,
+			"class": "cls_s404",
+			"status": "IN_SERVICE",
+			"location": "sta_bcn",
+			"km_since_maintenance": 3600
+		},
+		{
+			"id": "veh_v4",
+			"number": 4004,
+			"class": "cls_s404",
+			"status": "IN_SERVICE",
+			"location": "sta_bcn",
+			"km_since_maintenance": 4800
+		},
+		{
+			"id": "veh_v5",
+			"number": 4005,
+			"class": "cls_s404",
+			"status": "IN_SERVICE",
+			"location": "sta_bcn",
+			"km_since_maintenance": 6000
+		},
+		{
+			"id": "veh_v6",
+			"number": 4006,
+			"class": "cls_s404",
+			"status": "RESERVE",
+			"location": "sta_zar",
+			"km_since_maintenance": 7200
+		}
+	]
+}

@@ -47,7 +47,7 @@ Recorrido directo ≈ 2 h 30 min; cada parada añade ≈ 5 min (parada + pérdid
 ### Contenido
 
 - **10 servicios** programados entre 06:30 y ~14:00, con tres patrones de parada: directo (solo ZAR), semidirecto (ZAR, LLE, CTA) y todas las paradas. Incluye servicios cortos MAD-ZAR y ZAR-BCN.
-- **5 vehículos** (1 serie ficticia, 404 plazas): 4 en servicio, uno de ellos acoplado en **composición doble** con otro para la punta de la mañana; 1 de **reserva en Zaragoza-Delicias**.
+- **6 vehículos** (1 serie ficticia, 404 plazas): 4 composiciones en servicio (C3 es una **composición doble** V3+V4, 808 plazas) y 1 vehículo de **reserva en Zaragoza-Delicias**.
 - **Plantilla**: 6 maquinistas, 5 interventores; al menos un **relevo de maquinista en Zaragoza**.
 - **Incidencia guionizada** (activable) + incidencias aleatorias opcionales con semilla.
 

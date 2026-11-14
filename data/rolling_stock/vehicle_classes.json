@@ -1,0 +1,15 @@
+{
+	"schema_version": 1,
+	"classes": [
+		{
+			"id": "cls_s404",
+			"name": "Serie 404 (ficticia)",
+			"seats": 404,
+			"max_speed_kmh": 300,
+			"can_couple": true,
+			"max_coupled": 2,
+			"cost_per_km": 22.0,
+			"length_m": 200
+		}
+	]
+}
