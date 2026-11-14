@@ -56,6 +56,8 @@ func snapshot() -> Array[Dictionary]:
 	copy.sort_custom(func(a: SimEvent, b: SimEvent) -> bool: return a.before(b))
 	var out: Array[Dictionary] = []
 	for e: SimEvent in copy:
+		if e.cancelled:
+			continue
 		out.append({"time": e.time, "priority": e.priority, "seq": e.seq, "type": e.type,
 				"service_id": e.service_id, "stop_index": e.stop_index})
 	return out

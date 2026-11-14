@@ -1,6 +1,9 @@
 class_name OpsResourcesStrip
 extends HBoxContainer
-## Franja de recursos plegada (inferior): material, reserva y personal (solo lectura, mock).
+## Franja de recursos (inferior): material, reserva y personal. Solo lectura; `set_data` la
+## reconstruye únicamente cuando cambian los datos.
+
+var _signature: String = ""
 
 
 class _Chevron extends Control:
@@ -15,6 +18,17 @@ class _Chevron extends Control:
 func _ready() -> void:
 	add_theme_constant_override("separation", RcTokens.SP_4)
 	alignment = BoxContainer.ALIGNMENT_BEGIN
+
+
+## data: {items: [[título, valor, sufijo]], note: String}
+func set_data(data: Dictionary) -> void:
+	var signature: String = str(data)
+	if signature == _signature:
+		return
+	_signature = signature
+	for child: Node in get_children():
+		remove_child(child)
+		child.queue_free()
 	var title := Label.new()
 	title.theme_type_variation = &"LabelPanelTitle"
 	title.text = "RECURSOS"
@@ -24,11 +38,18 @@ func _ready() -> void:
 	toggle.custom_minimum_size = Vector2(RcTokens.TOUCH_MIN, RcTokens.TOUCH_MIN)
 	toggle.add_child(_Chevron.new())
 	add_child(toggle)
-	_add_item("Material", "4/5", "en servicio")
-	_add_item("Reserva", "V5", "en Zaragoza")
-	_add_item("Maquinistas", "5/6", "")
-	_add_item("Interventores", "5/5", "")
-	_add_note("Relevo de maquinista en Zaragoza · 09:10")
+	for item: Array in data["items"]:
+		_add_item(item[0], item[1], item[2])
+	var spacer := Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	add_child(spacer)
+	var note_text: String = data["note"]
+	if not note_text.is_empty():
+		var note := Label.new()
+		note.theme_type_variation = &"LabelMuted"
+		note.text = note_text
+		note.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		add_child(note)
 
 
 func _add_item(caption: String, value: String, suffix: String) -> void:
@@ -53,14 +74,3 @@ func _add_item(caption: String, value: String, suffix: String) -> void:
 		s.text = suffix
 		row.add_child(s)
 	add_child(row)
-
-
-func _add_note(text: String) -> void:
-	var spacer := Control.new()
-	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	add_child(spacer)
-	var note := Label.new()
-	note.theme_type_variation = &"LabelMuted"
-	note.text = text
-	note.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	add_child(note)

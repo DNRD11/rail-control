@@ -28,6 +28,12 @@ extends PanelContainer
 		history = value
 		_refresh()
 
+## Sin datos todavía: oculta tendencia y micrográfico y atenúa el valor.
+@export var no_data: bool = false:
+	set(value):
+		no_data = value
+		_refresh()
+
 var _caption_label: Label
 var _value_label: Label
 var _suffix_label: Label
@@ -117,5 +123,7 @@ func _refresh() -> void:
 	_trend.queue_redraw()
 	_spark.values = history
 	_spark.color = col
-	_spark.visible = history.size() >= 2
+	_spark.visible = history.size() >= 2 and not no_data
+	_trend.visible = not no_data
+	_value_label.add_theme_color_override("font_color", RcTokens.TEXT_MUTED if no_data else RcTokens.TEXT_PRIMARY)
 	_spark.queue_redraw()

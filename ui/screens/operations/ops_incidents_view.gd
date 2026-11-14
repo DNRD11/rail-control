@@ -1,35 +1,68 @@
 class_name OpsIncidentsView
 extends VBoxContainer
-## Panel izquierdo: incidencia activa, avisos previstos y resumen de la jornada (mock).
+## Panel izquierdo: incidencias activas (Fase 5), avisos de retraso previstos y resumen de la jornada.
+## Los datos llegan ya preparados desde OperationsPresenter.
 
-signal manage_requested
+signal notice_selected(code: String)
+signal inject_requested
+
+var _incident_box: VBoxContainer
+var _notice_box: VBoxContainer
+var _stat_value: Label
+var _bar: HBoxContainer
+var _legend: Label
+var _notice_signature: String = ""
+var _bar_signature: String = ""
 
 
 func _ready() -> void:
 	add_theme_constant_override("separation", RcTokens.SP_3)
 	size_flags_vertical = Control.SIZE_EXPAND_FILL
 
-	var card := RcAlertCard.new()
-	card.title = "Avería de material"
-	card.detail = "Servicio 3103 · entre Calatayud y Zaragoza"
-	card.time_text = "07:38"
-	card.chip_text = "AVERÍA"
-	card.manage_pressed.connect(func() -> void: manage_requested.emit())
-	add_child(card)
-	card.play_enter()
+	_incident_box = VBoxContainer.new()
+	_incident_box.add_theme_constant_override("separation", RcTokens.SP_2)
+	add_child(_incident_box)
+	var empty := Label.new()
+	empty.theme_type_variation = &"LabelMuted"
+	empty.text = "Sin incidencias activas"
+	_incident_box.add_child(empty)
 
 	add_child(_section("Avisos"))
-	add_child(_notice(RcTokens.State.WARN, "+9′", "3105 · rotación de 3103", "Saldría de ZAR a las 08:06"))
-	add_child(_notice(RcTokens.State.WARN, "+4′", "3150 · retraso en ruta", "Parada larga en Tarragona"))
-	add_child(_notice(RcTokens.State.OK, "OK", "3101 · 3152", "Circulan según horario"))
+	_notice_box = VBoxContainer.new()
+	_notice_box.add_theme_constant_override("separation", RcTokens.SP_2)
+	add_child(_notice_box)
 
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	add_child(spacer)
 
+	if OS.is_debug_build():
+		add_child(_section("Depuración"))
+		var inject := RcButton.new()
+		inject.text = "Inyectar retraso 3103 (+25′)"
+		inject.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		inject.pressed.connect(func() -> void: inject_requested.emit())
+		add_child(inject)
+
 	add_child(_section("Jornada"))
-	add_child(_stat_row("Servicios en circulación", "4 / 10"))
-	add_child(_punctuality_bar())
+	var row := HBoxContainer.new()
+	var k := Label.new()
+	k.theme_type_variation = &"LabelSecondary"
+	k.text = "Servicios en marcha"
+	k.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(k)
+	_stat_value = Label.new()
+	_stat_value.theme_type_variation = &"LabelData"
+	row.add_child(_stat_value)
+	add_child(row)
+	_bar = HBoxContainer.new()
+	_bar.add_theme_constant_override("separation", 2)
+	_bar.custom_minimum_size = Vector2(0, 8)
+	add_child(_bar)
+	_legend = Label.new()
+	_legend.theme_type_variation = &"LabelMuted"
+	_legend.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	add_child(_legend)
 
 
 func _section(text: String) -> Label:
@@ -40,62 +73,90 @@ func _section(text: String) -> Label:
 	return label
 
 
-func _notice(state: RcTokens.State, chip_text: String, title: String, detail: String) -> Control:
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", RcTokens.SP_2)
+## items: [{code, state, chip, title, detail}]
+func set_notices(items: Array[Dictionary]) -> void:
+	var signature: String = str(items)
+	if signature == _notice_signature:
+		return
+	_notice_signature = signature
+	for child: Node in _notice_box.get_children():
+		_notice_box.remove_child(child)
+		child.queue_free()
+	if items.is_empty():
+		var ok := Label.new()
+		ok.theme_type_variation = &"LabelMuted"
+		ok.text = "Todo el servicio circula según horario."
+		ok.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_notice_box.add_child(ok)
+		return
+	for item: Dictionary in items:
+		_notice_box.add_child(_notice(item))
+
+
+func _notice(item: Dictionary) -> Control:
+	var row := PanelContainer.new()
+	row.custom_minimum_size = Vector2(0, RcTokens.TOUCH_MIN)
+	row.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	row.gui_input.connect(func(event: InputEvent) -> void:
+		var mb := event as InputEventMouseButton
+		if mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
+			notice_selected.emit(item["code"]))
+	var inner := HBoxContainer.new()
+	inner.add_theme_constant_override("separation", RcTokens.SP_2)
+	inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(inner)
 	var chip := RcStatusChip.new()
-	chip.text = chip_text
-	chip.state = state
+	chip.text = item["chip"]
+	chip.state = item["state"]
 	chip.show_icon = false
-	chip.custom_minimum_size = Vector2(44, 28)
 	chip.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	row.add_child(chip)
+	inner.add_child(chip)
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", 0)
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row.add_child(col)
+	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	inner.add_child(col)
 	var t := Label.new()
 	t.theme_type_variation = &"LabelBody"
-	t.text = title
+	t.text = item["title"]
 	t.clip_text = true
+	t.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	col.add_child(t)
 	var d := Label.new()
 	d.theme_type_variation = &"LabelMuted"
-	d.text = detail
+	d.text = item["detail"]
+	d.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	d.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	col.add_child(d)
 	return row
 
 
-func _stat_row(key: String, value: String) -> Control:
-	var row := HBoxContainer.new()
-	var k := Label.new()
-	k.theme_type_variation = &"LabelSecondary"
-	k.text = key
-	k.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row.add_child(k)
-	var v := Label.new()
-	v.theme_type_variation = &"LabelData"
-	v.text = value
-	row.add_child(v)
-	return row
-
-
-func _punctuality_bar() -> Control:
-	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", RcTokens.SP_1)
-	var bar := HBoxContainer.new()
-	bar.add_theme_constant_override("separation", 2)
-	bar.custom_minimum_size = Vector2(0, 8)
-	box.add_child(bar)
-	var segments: Array[Array] = [[RcTokens.STATE_OK, 2.0], [RcTokens.STATE_WARN, 1.0], [RcTokens.STATE_ALERT, 1.0]]
+## summary: {running, total, ontime, minor, major}
+func set_summary(summary: Dictionary) -> void:
+	_stat_value.text = "%d / %d" % [summary["running"], summary["total"]]
+	var signature: String = str(summary)
+	if signature == _bar_signature:
+		return
+	_bar_signature = signature
+	for child: Node in _bar.get_children():
+		_bar.remove_child(child)
+		child.queue_free()
+	var segments: Array[Array] = [
+		[RcTokens.STATE_OK, summary["ontime"]], [RcTokens.STATE_WARN, summary["minor"]],
+		[RcTokens.STATE_ALERT, summary["major"]]]
+	var any: bool = false
 	for seg: Array in segments:
+		if int(seg[1]) <= 0:
+			continue
+		any = true
 		var panel := Panel.new()
 		panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		panel.size_flags_stretch_ratio = seg[1]
+		panel.size_flags_stretch_ratio = float(seg[1])
 		panel.add_theme_stylebox_override("panel", RcTokens.make_box(seg[0], 4))
-		bar.add_child(panel)
-	var legend := Label.new()
-	legend.theme_type_variation = &"LabelMuted"
-	legend.text = "2 en hora · 1 retraso · 1 incidencia"
-	box.add_child(legend)
-	return box
+		_bar.add_child(panel)
+	if not any:
+		var panel := Panel.new()
+		panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		panel.add_theme_stylebox_override("panel", RcTokens.make_box(RcTokens.STROKE_STRONG, 4))
+		_bar.add_child(panel)
+	_legend.text = "%d en hora · %d leve · %d grave" % [summary["ontime"], summary["minor"], summary["major"]]

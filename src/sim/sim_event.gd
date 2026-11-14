@@ -9,6 +9,8 @@ var type: StringName = &""
 var service_id: StringName = &""
 var stop_index: int = -1
 var data: Dictionary = {}
+## Evento invalidado (reprogramado): la sesión lo descarta sin despacharlo.
+var cancelled: bool = false
 
 
 ## True si este evento debe procesarse antes que `other`.

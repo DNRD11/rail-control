@@ -118,3 +118,13 @@ Hoja modal sobre el esquema atenuado (el esquema sigue visible y animado detrás
 ## 5. Proceso de revisión visual
 
 `tools/capture_screens.gd` lanza la pantalla con datos de prueba en 1280×720, 1920×1080, 2400×1080 y 1280×800, y guarda PNG en `user://captures/`. `ux-ui` revisa cada captura con la lista de [.claude/agents/ux-ui.md](../.claude/agents/ux-ui.md) antes de dar una pantalla por terminada.
+
+## 6. Pantalla de Operación con simulación (Fase 4)
+
+- `OperationsScreen` carga `mvp_mad_bcn_morning`, crea la sesión y un `SimulationHost` hijo; arranca en pausa con un velo «Iniciar jornada» (`OpsStartOverlay`). Un error de carga se muestra en ese mismo velo.
+- `OperationsPresenter` (ui/screens/operations/) traduce sesión → `SchematicService` (km interpolado con `query_service_position_at(now + fracción)`, sombra con `query_scheduled_position`, cadena con `query_service_chain`), detalle, avisos y franja de recursos. Solo lee; los cambios son comandos (`SetSpeedCommand`, `InjectDelayCommand`).
+- Estado visual por nivel de retraso (`DelayInfo.level`): ON_TIME → verde, MINOR → ámbar, MAJOR/SEVERE → rojo. Solo se dibujan los servicios en marcha.
+- Indicadores sin cifras (Fase 6): `RcKpiTile.no_data` muestra «—» sin tendencia ni micrográfico.
+- Nombres de estación del esquema se acortan con «…» si chocan con la vecina. Rutas del detalle con etiquetas cortas («Madrid → Zaragoza»).
+- Control de depuración «Inyectar retraso 3103 (+25′)» en el panel izquierdo, solo con `OS.is_debug_build()`.
+- Capturas: `docs/captures/phase4/` (etapas 0_inicio, 1_en_hora, 2_retraso, 3_propagacion).

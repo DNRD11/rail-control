@@ -12,6 +12,8 @@ var scheduled_km: float = 0.0
 var delay_min: int = 0
 var state: RcTokens.State = RcTokens.State.OK
 var broken: bool = false
+## Solo los servicios en marcha se muestran en el esquema.
+var active: bool = true
 ## Cadena de rotación: estación donde el material enlaza con el siguiente servicio.
 var chain_km: float = -1.0
 var chain_label: String = ""

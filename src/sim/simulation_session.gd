@@ -15,7 +15,10 @@ var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var log: OperationalLog = OperationalLog.new()
 var systems: Array[SimSystem] = []
 var command_log: Array[Command] = []
+var movement: MovementSystem
+var delay: DelaySystem
 var _day_finished_emitted: bool = false
+var _rotation_graph: RotationGraph
 
 
 static func create(p_world: World, seed_override: int = -1) -> SimulationSession:
@@ -28,7 +31,10 @@ static func create(p_world: World, seed_override: int = -1) -> SimulationSession
 	s.clock.time_scale = sc.time_scale
 	s.rng.seed = sc.seed if seed_override < 0 else seed_override
 	s.queue.push(SimEventType.DAY_END, sc.day_end)
-	s.register_system(MovementSystem.new())
+	s.movement = MovementSystem.new()
+	s.delay = DelaySystem.new()
+	s.register_system(s.movement)
+	s.register_system(s.delay)
 	return s
 
 
@@ -56,16 +62,45 @@ func advance_seconds(n: int) -> void:
 		return
 	var start: int = clock.now
 	var target: int = mini(clock.now + n, clock.day_end)
-	while not queue.is_empty() and queue.peek().time <= target:
-		var e: SimEvent = queue.pop()
-		clock.now = maxi(clock.now, e.time)
-		_dispatch(e)
+	_run_events_until(target)
 	clock.now = target
 	if clock.now != start:
 		clock_ticked.emit(clock.now)
 	if clock.is_day_over() and not _day_finished_emitted:
 		_day_finished_emitted = true
 		day_finished.emit()
+
+
+## Procesa los eventos pendientes cuya hora ya es la actual (p. ej. tras un comando que programa a `now`).
+func process_due_events() -> void:
+	if not clock.is_day_over():
+		_run_events_until(clock.now)
+
+
+func _run_events_until(target: int) -> void:
+	while not queue.is_empty() and queue.peek().time <= target:
+		var e: SimEvent = queue.pop()
+		if e.cancelled:
+			continue
+		clock.now = maxi(clock.now, e.time)
+		_dispatch(e)
+
+
+## Grafo de rotaciones derivado de las asignaciones (se construye una vez; invalidar si cambian).
+func rotation_graph() -> RotationGraph:
+	if _rotation_graph == null:
+		_rotation_graph = RotationGraph.build(world)
+	return _rotation_graph
+
+
+func invalidate_rotation_graph() -> void:
+	_rotation_graph = null
+
+
+## Recalcula las horas estimadas aguas abajo de un servicio (tras un cambio de est_*).
+func propagate_delays(service_id: StringName) -> void:
+	if delay != null:
+		delay.propagate(service_id, self)
 
 
 func _dispatch(e: SimEvent) -> void:
@@ -86,18 +121,49 @@ func query_service_position(service_id: StringName) -> ServicePosition:
 	return ServicePositionCalc.compute(world, s, clock.now)
 
 
-## Retraso conocido (s): diferencia entre lo real y lo programado en el último punto alcanzado. 0 sin retrasos.
+## Posición en un instante de simulación fraccional (interpolación visual) con las est_* vigentes.
+func query_service_position_at(service_id: StringName, t: float) -> ServicePosition:
+	var s: Service = world.services.get(service_id) as Service
+	return ServicePositionCalc.compute_at(world, s, t) if s != null else null
+
+
+## Posición teórica según el horario programado (sombra programada).
+func query_scheduled_position(service_id: StringName, t: float) -> ServicePosition:
+	var s: Service = world.services.get(service_id) as Service
+	return ServicePositionCalc.compute_scheduled(world, s, t) if s != null else null
+
+
+## Retraso vigente (s): est - programada del próximo punto pendiente, o real - programada del último.
 func delay_of(service_id: StringName) -> int:
 	var s: Service = world.services.get(service_id) as Service
-	if s == null:
-		return 0
-	for i: int in range(s.stops.size() - 1, -1, -1):
-		var st: ServiceStop = s.stops[i]
-		if st.act_dep != SimTime.NONE and st.exit_time() != SimTime.NONE:
-			return st.act_dep - st.exit_time()
-		if st.act_arr != SimTime.NONE and st.entry_time() != SimTime.NONE:
-			return st.act_arr - st.entry_time()
-	return 0
+	return DelaySystem.seconds_of(s) if s != null else 0
+
+
+## Retraso vigente con su causa y nivel (null si el servicio no existe).
+func delay_info(service_id: StringName) -> DelayInfo:
+	var s: Service = world.services.get(service_id) as Service
+	return delay.info_for(s) if s != null and delay != null else null
+
+
+## Ids de servicios ordenados por código.
+func service_ids() -> Array[StringName]:
+	return SessionQueries.service_ids(world)
+
+
+func query_service_resources(service_id: StringName) -> Array[ResourceSlot]:
+	return SessionQueries.service_resources(world, service_id)
+
+
+func query_service_chain(service_id: StringName) -> Array[ChainLink]:
+	return SessionQueries.service_chain(world, rotation_graph(), service_id)
+
+
+func query_resource_states() -> Array[ResourceState]:
+	return SessionQueries.resource_states(world)
+
+
+func query_service_summary(service_id: StringName) -> ServiceSummary:
+	return SessionQueries.service_summary(world, service_id)
 
 
 ## Servicios en marcha o detenidos en estación (orden de inserción).

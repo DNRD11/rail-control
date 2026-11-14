@@ -9,6 +9,9 @@ var resource_id: StringName = &""
 var station_id: StringName = &""
 var from_assignment_id: StringName = &""
 var to_assignment_id: StringName = &""
+## Parada de A donde termina su asignación y parada de B donde empieza la suya.
+var from_end_stop: int = 0
+var to_start_stop: int = 0
 var gap_s: int = 0
 var min_connection_s: int = 0
 var margin_s: int = 0

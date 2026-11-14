@@ -43,7 +43,9 @@ func _add_resource(world: World, type: Enums.ResourceType, rid: StringName, k: S
 			e.station_id = a.from_station_id
 			e.from_assignment_id = prev.id
 			e.to_assignment_id = a.id
-			e.gap_s = a.planned_start - prev.planned_end
+			e.from_end_stop = prev.to_stop_index
+			e.to_start_stop = a.from_stop_index
+			e.gap_s =a.planned_start - prev.planned_end
 			e.min_connection_s = _min_connection(world, type, e.station_id)
 			e.margin_s = e.gap_s - e.min_connection_s
 			edges.append(e)

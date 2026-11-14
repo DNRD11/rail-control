@@ -150,6 +150,7 @@ func _place_markers() -> void:
 		var marker: ServiceMarker = _markers.get(service.code)
 		if marker == null:
 			continue
+		marker.visible = service.active
 		marker.position = Vector2(km_to_x(service.km), _track_y(service.direction)) - ServiceMarker.CENTER
 
 
@@ -195,7 +196,7 @@ func _draw_stations() -> void:
 		for direction: int in [-1, 1]:
 			draw_circle(Vector2(x, _track_y(direction)), 3.5, RcTokens.TEXT_SECONDARY)
 		RcDraw.text_center(self, RcTokens.font_station(), st.code, Vector2(x, top - 62.0), RcTokens.FS_STATION + 2, RcTokens.TEXT_PRIMARY)
-		RcDraw.text_center(self, RcTokens.font_text(), st.short_name, Vector2(x, top - 43.0), NAME_FONT, RcTokens.TEXT_SECONDARY)
+		RcDraw.text_center(self, RcTokens.font_text(), _fit_name(st.short_name, i), Vector2(x, top - 43.0), NAME_FONT, RcTokens.TEXT_SECONDARY)
 		if _eta.has(st.code):
 			var eta: Array = _eta[st.code]
 			var text: String = eta[0]
@@ -204,6 +205,23 @@ func _draw_stations() -> void:
 			var rect := Rect2(Vector2(x - w * 0.5, top - 30.0), Vector2(w, 22.0))
 			draw_style_box(RcTokens.make_box(RcTokens.with_alpha(col, 0.14), RcTokens.RADIUS_CHIP, RcTokens.with_alpha(col, 0.6), 1), rect)
 			RcDraw.text_center(self, RcTokens.font_mono_medium(), text, rect.get_center(), NAME_FONT, col)
+
+
+## Nombre acortado con «…» para que no choque con el de la estación vecina.
+func _fit_name(text: String, index: int) -> String:
+	var room: float = 1000.0
+	if index > 0:
+		room = minf(room, _station_x[index] - _station_x[index - 1])
+	if index < _stations.size() - 1:
+		room = minf(room, _station_x[index + 1] - _station_x[index])
+	room -= 8.0
+	var font: Font = RcTokens.font_text()
+	if RcDraw.text_width(font, text, NAME_FONT) <= room:
+		return text
+	var cut: String = text
+	while cut.length() > 3 and RcDraw.text_width(font, cut + "…", NAME_FONT) > room:
+		cut = cut.substr(0, cut.length() - 1)
+	return cut + "…"
 
 
 func _draw_ruler_and_legend() -> void:
@@ -245,7 +263,7 @@ func _dashed_poly(pts: PackedVector2Array, col: Color, width: float) -> void:
 ## «Sombra programada»: fantasma discontinuo donde debería estar el servicio según
 ## horario, unido al real por un segmento semántico. El retraso se ve como distancia.
 func _draw_schedule_shadow(service: SchematicService) -> void:
-	if service.delay_min <= 0:
+	if service.delay_min <= 0 or not service.active:
 		return
 	var marker: ServiceMarker = _markers.get(service.code)
 	var alpha: float = marker.modulate.a if marker != null else 1.0
@@ -262,7 +280,7 @@ func _draw_schedule_shadow(service: SchematicService) -> void:
 ## Cadena de rotación del servicio seleccionado (siguiente servicio con el mismo material).
 func _draw_chain() -> void:
 	for service: SchematicService in _services:
-		if service.code != _selected_code or service.chain_km < 0.0:
+		if service.code != _selected_code or service.chain_km < 0.0 or not service.active:
 			continue
 		var y: float = _track_y(service.direction)
 		var cx: float = km_to_x(service.chain_km)

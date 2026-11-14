@@ -4,7 +4,7 @@ Videojuego de simulación de gestión ferroviaria para Android (horizontal). El 
 
 Escenario inicial (MVP 0.1): **LAV Madrid-Barcelona** (7 estaciones), con datos operativos ficticios y simplificados.
 
-> Estado: **Fase 3 — motor temporal** completada (los servicios circulan en simulación headless; aún sin pantalla conectada). Ver [docs/ROADMAP.md](docs/ROADMAP.md).
+> Estado: **Fase 4 — Operación** completada: la pantalla CGO muestra la simulación en vivo (reloj, velocidades, retrasos y propagación). Ver [docs/ROADMAP.md](docs/ROADMAP.md).
 
 ## Requisitos
 
