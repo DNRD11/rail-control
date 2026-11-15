@@ -6,6 +6,9 @@ signal clock_ticked(now: int)
 signal speed_changed(speed: int)
 signal service_updated(service_id: StringName)
 signal service_stop_event(service_id: StringName, stop_index: int, kind: StringName)
+signal incident_changed(incident_id: StringName)
+signal ledger_changed(entry: LedgerEntry)
+signal indicators_changed()
 signal day_finished()
 
 var world: World
@@ -17,6 +20,10 @@ var systems: Array[SimSystem] = []
 var command_log: Array[Command] = []
 var movement: MovementSystem
 var delay: DelaySystem
+var incidents: IncidentSystem
+var economy: EconomySystem
+var passenger: PassengerSystem
+var perception: PerceptionSystem
 var _day_finished_emitted: bool = false
 var _rotation_graph: RotationGraph
 
@@ -34,7 +41,18 @@ static func create(p_world: World, seed_override: int = -1) -> SimulationSession
 	s.movement = MovementSystem.new()
 	s.delay = DelaySystem.new()
 	s.register_system(s.movement)
+	s.incidents = IncidentSystem.new()
 	s.register_system(s.delay)
+	s.register_system(s.incidents)
+	s.economy = EconomySystem.new()
+	s.passenger = PassengerSystem.new()
+	s.perception = PerceptionSystem.new()
+	s.register_system(s.passenger)
+	s.register_system(s.economy)
+	s.register_system(s.perception)
+	s.service_updated.connect(s._on_service_updated)
+	s.incident_changed.connect(s._on_incident_changed)
+	s.economy.entry_added.connect(s._on_entry_added)
 	return s
 
 
@@ -103,9 +121,26 @@ func propagate_delays(service_id: StringName) -> void:
 		delay.propagate(service_id, self)
 
 
+func _on_service_updated(service_id: StringName) -> void:
+	passenger.on_service_updated(service_id, self)
+	economy.on_service_updated(service_id, self)
+	indicators_changed.emit()
+
+
+func _on_incident_changed(incident_id: StringName) -> void:
+	economy.on_incident_changed(incident_id, self)
+	indicators_changed.emit()
+
+
+func _on_entry_added(entry: LedgerEntry) -> void:
+	ledger_changed.emit(entry)
+
+
 func _dispatch(e: SimEvent) -> void:
 	if e.type == SimEventType.DAY_END:
 		log.add(e.time, e.type)
+		economy.on_day_end(self)
+		indicators_changed.emit()
 		return
 	for sys: SimSystem in systems:
 		if sys.handles(e.type):
@@ -143,6 +178,43 @@ func delay_of(service_id: StringName) -> int:
 func delay_info(service_id: StringName) -> DelayInfo:
 	var s: Service = world.services.get(service_id) as Service
 	return delay.info_for(s) if s != null and delay != null else null
+
+
+## Incidencias abiertas (esperan decisión o en curso), por orden de creación.
+func open_incidents() -> Array[Incident]:
+	return incidents.open_incidents()
+
+
+## Todas las incidencias de la jornada, por orden de creación (historial).
+func all_incidents() -> Array[Incident]:
+	return incidents.incidents
+
+
+func query_incident(incident_id: StringName) -> Incident:
+	return incidents.get_incident(incident_id)
+
+
+## Incidencia con las previsualizaciones recalculadas a la hora actual.
+func query_incident_fresh(incident_id: StringName) -> Incident:
+	var inc: Incident = incidents.get_incident(incident_id)
+	if inc != null:
+		incidents.refresh_options(inc, self)
+	return inc
+
+
+## Libro de la jornada (solo lectura).
+func query_ledger() -> Ledger:
+	return economy.ledger
+
+
+## Calidad, percepción, resultado y viajeros de la jornada hasta ahora.
+func query_indicators() -> Indicators:
+	return perception.compute(self)
+
+
+## Viajeros de un servicio con los contadores calculados ahora (copia; null si no hay datos).
+func query_service_passengers(service_id: StringName) -> ServicePassengerLoad:
+	return passenger.snapshot(service_id, self)
 
 
 ## Ids de servicios ordenados por código.

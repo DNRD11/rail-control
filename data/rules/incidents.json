@@ -1,0 +1,22 @@
+{
+	"schema_version": 1,
+	"decision_timeout_s": 900,
+	"default_option": "WAIT_REPAIR",
+	"positioning_speed_kmh": 200,
+	"costs": {
+		"repair_on_route_cents": 300000,
+		"rescue_cents": 800000,
+		"reserve_mobilization_cents": 250000,
+		"empty_run_per_km_cents": 1200
+	},
+	"types": [
+		{
+			"id": "ROLLING_STOCK_FAILURE",
+			"category": "ROLLING_STOCK",
+			"title": "Avería de material",
+			"repair_time_range_s": [1200, 5400],
+			"probability_per_hour": 0.12,
+			"options": ["WAIT_REPAIR", "SUBSTITUTE_ROLLING_STOCK", "CANCEL_SERVICE"]
+		}
+	]
+}

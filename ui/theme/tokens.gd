@@ -40,6 +40,14 @@ const LEFT_PANEL_W := 260
 const RIGHT_PANEL_W := 300
 const BOTTOM_BAR_H := 56
 
+# --- Pantallas de aplicación (menú, selección, briefing, informe, ajustes) ----
+const BUTTON_LARGE_H := 56
+const ROW_H := 56
+const ROW_TALL_H := 72
+const MENU_PANEL_W := 380
+const FS_DISPLAY := 44
+const FS_TITLE := 26
+
 # --- Radios ----------------------------------------------------------------
 const RADIUS_CHIP := 6
 const RADIUS_CARD := 10

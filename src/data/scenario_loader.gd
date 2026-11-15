@@ -22,6 +22,10 @@ static func load_raw(scenario_id: String, data_dir: String = "res://data") -> Di
 	for key: String in SCENARIO_FILES:
 		raw[key] = _read_json("%s/%s" % [base, SCENARIO_FILES[key]], errors)
 	raw["vehicle_classes"] = _read_json("%s/rolling_stock/vehicle_classes.json" % data_dir, errors)
+	raw["incident_rules"] = _read_json("%s/rules/incidents.json" % data_dir, errors)
+	raw["economy_rules"] = _read_json("%s/rules/economy.json" % data_dir, errors)
+	raw["compensation_rules"] = _read_json("%s/rules/compensation.json" % data_dir, errors)
+	raw["perception_rules"] = _read_json("%s/rules/perception.json" % data_dir, errors)
 	raw["lines"] = _read_lines(scenario, data_dir, errors)
 	raw["_errors"] = errors
 	return raw

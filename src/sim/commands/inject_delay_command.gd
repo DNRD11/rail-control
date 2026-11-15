@@ -24,7 +24,7 @@ func validate(session: SimulationSession) -> String:
 	var s: Service = session.world.services.get(service_id) as Service
 	if s == null:
 		return "Servicio desconocido: %s" % service_id
-	if s.status == Enums.ServiceStatus.TERMINATED or s.status == Enums.ServiceStatus.CANCELLED:
+	if s.status == Enums.ServiceStatus.TERMINATED or s.is_cancelled():
 		return "El servicio %s ya ha terminado o está cancelado" % s.code
 	return ""
 

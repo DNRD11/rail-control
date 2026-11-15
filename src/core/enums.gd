@@ -14,6 +14,7 @@ enum StaffStatus { AVAILABLE, ON_DUTY, RESTING, ABSENT }
 enum ResourceType { COMPOSITION, VEHICLE, DRIVER, CONDUCTOR }
 enum AssignmentStatus { PLANNED, ACTIVE, COMPLETED, CANCELLED, REPLACED }
 enum AssignmentSource { PLAN, PLAYER, INCIDENT_REPLACEMENT, PAT }
+enum IncidentStatus { DETECTED, AWAITING_DECISION, IN_PROGRESS, RESOLVED, CLOSED }
 
 
 ## Nombre (JSON) → valor del enum. Devuelve `fallback` si no existe.

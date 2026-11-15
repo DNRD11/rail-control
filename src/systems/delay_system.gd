@@ -22,22 +22,25 @@ func handles(type: StringName) -> bool:
 
 func handle(event: SimEvent, session: SimulationSession) -> void:
 	var s: Service = session.world.services.get(event.service_id) as Service
-	if s == null or s.status == Enums.ServiceStatus.TERMINATED or s.status == Enums.ServiceStatus.CANCELLED:
-		return
-	var seconds: int = int(event.data.get("seconds", 0))
-	if seconds <= 0:
-		return
 	var cause: StringName = StringName(event.data.get("cause", DelayInfo.CAUSE_INJECTED))
 	var pct: int = clampi(int(event.data.get("recovery_pct", 0)), 0, 100)
+	apply_delay(s, int(event.data.get("seconds", 0)), cause, session, pct)
+
+
+## Suma un retraso al servicio (lo usan DELAY_APPLIED y las incidencias). False si no se pudo aplicar.
+func apply_delay(s: Service, seconds: int, cause: StringName, session: SimulationSession, pct: int = 0) -> bool:
+	if s == null or s.status == Enums.ServiceStatus.TERMINATED or s.is_cancelled() or seconds <= 0:
+		return false
 	var idx: int = session.movement.next_pending_index(s)
 	if not _shift(s, seconds, pct):
-		return
+		return false
 	_mark(s.id, cause, s.id, &"")
 	session.log.add(session.clock.now, SimEventType.DELAY_APPLIED, s.id, idx,
 			{"seconds": seconds, "cause": String(cause)})
 	session.movement.reschedule(s, session)
 	session.service_updated.emit(s.id)
 	propagate(s.id, session)
+	return true
 
 
 ## Retraso vigente (segundos) y su causa para la UI.
@@ -57,7 +60,7 @@ func info_for(s: Service) -> DelayInfo:
 ## est - programada del próximo punto pendiente, o real - programada del último ocurrido.
 static func seconds_of(s: Service) -> int:
 	var n: int = s.stops.size()
-	if n == 0 or s.status == Enums.ServiceStatus.CANCELLED:
+	if n == 0 or s.is_cancelled():
 		return 0
 	if s.status == Enums.ServiceStatus.TERMINATED:
 		var last: ServiceStop = s.stops[n - 1]
@@ -112,8 +115,8 @@ func _first_departure(world: World, sid: StringName) -> int:
 func _apply_edge(e: RotationEdge, session: SimulationSession) -> bool:
 	var a: Service = session.world.services.get(e.from_service_id) as Service
 	var b: Service = session.world.services.get(e.to_service_id) as Service
-	if a == null or b == null or a.status == Enums.ServiceStatus.CANCELLED \
-			or b.status == Enums.ServiceStatus.TERMINATED or b.status == Enums.ServiceStatus.CANCELLED:
+	if a == null or b == null or a.is_cancelled() \
+			or b.status == Enums.ServiceStatus.TERMINATED or b.is_cancelled():
 		return false
 	if e.from_end_stop >= a.stops.size() or e.to_start_stop >= b.stops.size():
 		return false

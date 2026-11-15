@@ -9,7 +9,7 @@ Escenario inicial (MVP 0.1): **LAV Madrid-Barcelona** (7 estaciones), con datos 
 ## Requisitos
 
 - Godot **4.7.2** estable (sin .NET). En esta máquina: `C:\Users\lozan\Godot_v4.7.2-stable_win64\`.
-- Para Android (fase posterior): plantillas de export 4.7.2, Android SDK y JDK 17 configurados en Godot.
+- Para exportar a Android: ver [Export Android](#export-android).
 - Sin dependencias externas ni addons.
 
 ## Ejecución
@@ -42,3 +42,28 @@ Escenario inicial (MVP 0.1): **LAV Madrid-Barcelona** (7 estaciones), con datos 
 ## Aviso
 
 La geografía y las estaciones son reales; horarios, material, plantillas, tarifas, indemnizaciones y cánones son **ficticios** y configurables, y no representan a ninguna operadora real ni al administrador de infraestructuras.
+
+## Export Android
+
+Preset `Android debug` en `export_presets.cfg`: APK de depuración, `arm64-v8a`, horizontal, renderer Mobile, sin Gradle (usa la plantilla precompilada `android_debug.apk`), paquete `com.railcontrol.cgo`. El proyecto activa `rendering/textures/vram_compression/import_etc2_astc` (obligatorio para Android).
+
+Requisitos (verificados en esta máquina):
+
+- Plantillas de exportación 4.7.2 en `%APPDATA%\Godot\export_templates\4.7.2.stable\`.
+- JDK 17 (Eclipse Adoptium 17.0.20) y Android SDK (`platform-tools`, `build-tools;36.0.0`, `platforms;android-36`).
+- En Editor Settings: `export/android/java_sdk_path`, `export/android/android_sdk_path` y `export/android/debug_keystore` (alias `androiddebugkey`, contraseña `android`). Crear la keystore: `keytool -genkeypair -v -keystore debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 9999 -dname "CN=Android Debug,O=Android,C=US"`.
+
+Exportación headless:
+
+```powershell
+$g = "C:\Users\lozan\Godot_v4.7.2-stable_win64\Godot_v4.7.2-stable_win64_console.exe"
+& $g --headless --path . --import
+& $g --headless --path . --export-debug "Android debug" build/rail-control-debug.apk
+adb install -r build/rail-control-debug.apk
+```
+
+Estado (2026-11-14): la exportación generó y firmó `build/rail-control-debug.apk` (~29 MB, `arm64-v8a`, minSdk 24, horizontal). **No se ha instalado ni ejecutado en dispositivo o emulador**; la revisión táctil real sigue pendiente. `build/` está en `.gitignore`.
+
+## Guardado y ajustes
+
+Autoguardado en `user://saves/autosave.json` (guardado determinista, ver ARCHITECTURE §4) y ajustes en `user://settings.cfg`.

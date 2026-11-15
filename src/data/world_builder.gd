@@ -5,6 +5,7 @@ extends RefCounted
 const SUPPORTED_SCHEMA: int = 1
 const FILE_KEYS: Array[String] = [
 	"scenario", "vehicle_classes", "services", "vehicles", "compositions", "staff", "assignments", "passengers",
+	"incident_rules", "economy_rules", "compensation_rules", "perception_rules",
 ]
 
 
@@ -28,6 +29,10 @@ static func build(raw: Dictionary, report: ValidationReport) -> World:
 	NetworkParser.parse(lines, world, report)
 	FleetParser.parse(_file(raw, "vehicle_classes"), _file(raw, "vehicles"), _file(raw, "compositions"),
 			_file(raw, "staff"), world, report)
+	world.incident_rules = IncidentRulesParser.parse(_file(raw, "incident_rules"), report)
+	world.economy_rules = EconomyRulesParser.parse_economy(_file(raw, "economy_rules"), report)
+	world.compensation_rules = EconomyRulesParser.parse_compensation(_file(raw, "compensation_rules"), report)
+	world.perception_rules = EconomyRulesParser.parse_perception(_file(raw, "perception_rules"), report)
 	ScheduleParser.parse(_file(raw, "services"), _file(raw, "assignments"), _file(raw, "passengers"), world, report)
 	return world
 
@@ -63,6 +68,7 @@ static func _parse_scenario(d: Dictionary, report: ValidationReport) -> Scenario
 	s.min_conductors_per_segment = rr.read_int(rules, "min_conductors_per_segment", false, 1)
 	s.staff_connection_s = rr.read_int(rules, "staff_connection_s", false, 600)
 	s.transfer_s = rr.read_int(rules, "transfer_s", false, 900)
+	s.random_incidents_enabled = rr.read_bool(rules, "random_incidents", false, false)
 	for item: Dictionary in r.read_dicts(d, "scripted_incidents", false):
 		s.scripted_incidents.append(item)
 	return s

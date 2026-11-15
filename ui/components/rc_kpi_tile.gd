@@ -34,6 +34,17 @@ extends PanelContainer
 		no_data = value
 		_refresh()
 
+## Muestra la flecha de tendencia (false en cifras sin evolución, p. ej. totales del informe).
+@export var show_trend: bool = true:
+	set(value):
+		show_trend = value
+		_refresh()
+## Estado semántico que colorea el valor (-1 = texto principal). P. ej. resultado negativo → alerta.
+@export var value_state: int = -1:
+	set(value):
+		value_state = value
+		_refresh()
+
 var _caption_label: Label
 var _value_label: Label
 var _suffix_label: Label
@@ -124,6 +135,11 @@ func _refresh() -> void:
 	_spark.values = history
 	_spark.color = col
 	_spark.visible = history.size() >= 2 and not no_data
-	_trend.visible = not no_data
-	_value_label.add_theme_color_override("font_color", RcTokens.TEXT_MUTED if no_data else RcTokens.TEXT_PRIMARY)
+	_trend.visible = show_trend and not no_data
+	var value_col: Color = RcTokens.TEXT_PRIMARY
+	if no_data:
+		value_col = RcTokens.TEXT_MUTED
+	elif value_state >= 0:
+		value_col = RcTokens.state_color(value_state as RcTokens.State)
+	_value_label.add_theme_color_override("font_color", value_col)
 	_spark.queue_redraw()

@@ -52,8 +52,9 @@ func _ready() -> void:
 	col.add_child(_button)
 
 
-func show_ready(title: String, detail: String) -> void:
+func show_ready(title: String, detail: String, button_text: String = "Iniciar jornada") -> void:
 	visible = true
+	_button.text = button_text
 	_title.text = title
 	_sub.text = detail
 	_button.visible = true

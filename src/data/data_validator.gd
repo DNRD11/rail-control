@@ -33,6 +33,26 @@ static func _validate_scenario(world: World, report: ValidationReport) -> void:
 			report.error(&"UNKNOWN_REF", "scenario: la línea «%s» no existe" % lid)
 	if sc.day_start >= sc.day_end:
 		report.error(&"BAD_VALUE", "scenario: day_start debe ser anterior a day_end")
+	for i: int in sc.scripted_incidents.size():
+		_validate_scripted_incident(sc.scripted_incidents[i], i, world, report)
+
+
+static func _validate_scripted_incident(d: Dictionary, idx: int, world: World, report: ValidationReport) -> void:
+	var ctx: String = "scenario.scripted_incidents[%d]" % idx
+	var r: DictReader = DictReader.new(report, ctx)
+	r.read_id(d, "id")
+	var type_id: StringName = r.read_id(d, "type")
+	if type_id != &"" and not world.incident_rules.types.has(type_id):
+		report.error(&"UNKNOWN_REF", "%s: el tipo «%s» no está en incidents.json" % [ctx, type_id])
+	var service_id: StringName = r.read_id(d, "service")
+	if service_id != &"" and not world.services.has(service_id):
+		report.error(&"UNKNOWN_REF", "%s: el servicio «%s» no existe" % [ctx, service_id])
+	var section_id: StringName = r.read_id(d, "section", false)
+	if section_id != &"" and not world.sections.has(section_id):
+		report.error(&"UNKNOWN_REF", "%s: el tramo «%s» no existe" % [ctx, section_id])
+	var t: int = r.read_time(d, "time")
+	if t != SimTime.NONE and (t < world.scenario.day_start or t >= world.scenario.day_end):
+		report.error(&"BAD_VALUE", "%s: la hora queda fuera de la jornada" % ctx)
 
 
 static func _validate_line(line: Line, world: World, report: ValidationReport) -> void:

@@ -14,3 +14,5 @@ var min_conductors_per_segment: int = 1
 var staff_connection_s: int = 600
 var transfer_s: int = 900
 var scripted_incidents: Array[Dictionary] = []
+## Incidencias aleatorias: desactivadas por defecto (el escenario MVP es guionizado).
+var random_incidents_enabled: bool = false

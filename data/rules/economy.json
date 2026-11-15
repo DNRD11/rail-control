@@ -1,0 +1,10 @@
+{
+	"schema_version": 1,
+	"price_per_pax_km_cents": 10,
+	"operating_cost_per_vehicle_km_cents": 1200,
+	"staff_per_hour_cents": {
+		"DRIVER": 6000,
+		"CONDUCTOR": 4000
+	},
+	"infra_charge_per_km_cents": 400
+}

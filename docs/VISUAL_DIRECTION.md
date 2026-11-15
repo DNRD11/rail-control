@@ -117,7 +117,7 @@ Hoja modal sobre el esquema atenuado (el esquema sigue visible y animado detrás
 
 ## 5. Proceso de revisión visual
 
-`tools/capture_screens.gd` lanza la pantalla con datos de prueba en 1280×720, 1920×1080, 2400×1080 y 1280×800, y guarda PNG en `user://captures/`. `ux-ui` revisa cada captura con la lista de [.claude/agents/ux-ui.md](../.claude/agents/ux-ui.md) antes de dar una pantalla por terminada.
+`tools/capture_screens.gd` lanza la pantalla con datos reales de la simulación en 1280×720, 1920×1080, 2400×1080 y 1280×800, y guarda PNG en `user://captures/`. `ux-ui` revisa cada captura con la lista de [.claude/agents/ux-ui.md](../.claude/agents/ux-ui.md) antes de dar una pantalla por terminada.
 
 ## 6. Pantalla de Operación con simulación (Fase 4)
 
@@ -128,3 +128,43 @@ Hoja modal sobre el esquema atenuado (el esquema sigue visible y animado detrás
 - Nombres de estación del esquema se acortan con «…» si chocan con la vecina. Rutas del detalle con etiquetas cortas («Madrid → Zaragoza»).
 - Control de depuración «Inyectar retraso 3103 (+25′)» en el panel izquierdo, solo con `OS.is_debug_build()`.
 - Capturas: `docs/captures/phase4/` (etapas 0_inicio, 1_en_hora, 2_retraso, 3_propagacion).
+
+## 7. Incidencias y decisión (Fase 5)
+
+- `SimulationHost` reexpone `incident_changed`. Al detectarse una avería (`AWAITING_DECISION`) la pantalla selecciona el servicio, **pausa** (guardando la velocidad anterior solo si corría) y abre `OpsDecisionSheet`; al decidir (o expirar la decisión automática) cierra la hoja y reanuda a la velocidad previa. «Gestionar» en la tarjeta reabre la hoja (y pausa si hacía falta). «Decidir más tarde» cierra sin reanudar.
+- `OpsIncidentsView` (ahora `ScrollContainer`, barra fina temada): tarjetas `RcAlertCard` por incidencia abierta (chip AVERÍA / EN CURSO, cuenta atrás en el texto, sin botón si ya hay decisión), sección **Historial** (opción elegida, coste, «automática» o «decidida por ti») y Avisos. El contador de la barra superior cuenta incidencias (rojo si esperan decisión, ámbar si solo están en curso) y, si no hay, avisos de retraso.
+- `OpsIncidentPresenter` convierte `Incident`/`DecisionOption`/`OptionPreview` en modelos; usa `query_incident_fresh` para refrescar previsualizaciones en cada tic mientras la hoja está abierta. `RcFormat` da formato español (`3.000 €`, `+25–90′`, `hasta +25′`, `mm:ss`).
+- **Hoja de decisión** (`PanelSheet`, ancho máx. 1136 px, sobre velo al 72 %): cabecera con chip, qué/dónde/cuándo/viajeros a bordo/rango de reparación, cuenta atrás grande + barra (ámbar en el último tercio) y tres `RcDecisionCard` con las mismas cuatro métricas en el mismo orden (retraso propio, viajeros afectados, coste estimado, reanudación), lista de servicios afectados (máx. 3 + «y N más»), avisos como chip (`Faltan N plazas` ámbar, `N necesitan alternativa` violeta) y botón de confirmación de 48 px (una pulsación). Cancelar usa `RcButton.Kind.DANGER`. Opción no disponible: tarjeta atenuada, chip «No disponible» y motivo, botón deshabilitado.
+- Nuevos elementos del tema: `PanelSheet`, `RcButtonDanger`, barra `VScrollBar` fina. La hoja usa `bg_panel` (no `bg_overlay`) para que las tarjetas `bg_raised` queden elevadas sobre ella.
+- Capturas: `docs/captures/phase5/` (1_averia_detectada, 2_espera_en_curso, 3_espera_resuelta, 4_sustituir, 5_cancelar) con `tools/capture_screens.gd`.
+
+## 8. Pantallas de aplicación e informe (Fase 7)
+
+Flujo: Menú → Selección de escenario → Briefing → Operación → Informe (`AppFlow.go`). Todas las pantallas de aplicación heredan de `RcScreenFrame` (fondo de consola, cabecera de 64 px con marca + kicker + título + botón volver opcional, cuerpo, pie con acciones y `RcToast`) y solo implementan `_build()`.
+
+| Pantalla | Escena | Composición |
+|---|---|---|
+| Menú principal | `ui/screens/menu/` | Identidad a la izquierda (kicker, «Rail Control», chips) y panel «Jornada» de 380 px con botones grandes de 56 px (Nueva jornada primario, Continuar solo si hay guardado, Configuración, Salir ghost). Ilustración inferior `MenuBackdrop`: dos vías con servicios que avanzan lentamente (se detiene con «Reducir animaciones»). |
+| Selección de escenario | `ui/screens/scenario_select/` | Lista de `RcListRow` altas (72 px, selección con borde acento) + ficha con tres `RcKpiTile` (franja, servicios, incidencias) y «Qué vas a hacer». Escenarios futuros como filas atenuadas con chip «Próximamente». |
+| Briefing | `ui/screens/briefing/` | Tres módulos: Objetivos (derivados de `data/rules/report.json`), Resumen del escenario (descripción + 4 tiles) y Recursos disponibles (filas). Pie: nota sobre la pausa inicial y «Comenzar jornada». `BriefingPresenter` solo lee el escenario. |
+| Configuración | `ui/screens/settings/` | Panel centrado de 780 px: velocidad inicial (segmentado), pausa automática (`RcToggle`), tamaño de interfaz (Pequeña/Normal/Grande) y reducir animaciones. Lee y guarda `AppFlow.settings` (`Settings.save()`); «Reducir animaciones» no existe en `Settings` y se guarda en `user://ui_prefs.cfg` vía `UiSettings`. Volver regresa a Operación si hay jornada en curso (se llegó desde la pausa) o al menú. |
+| Informe final | `ui/screens/report/` | Columna izquierda: `RcGradeBadge` (A verde, B cian, C ámbar, D rojo; arco = puntuación) + los tres indicadores con `RcMeter` (marcas en los cortes de nota 55/70/85), lectura textual y chip. Centro: desglose económico con `RcBarRow` (ingresos verde, ordinarios gris, incidencias rojo, indemnizaciones ámbar) y total grande; fila de 4 tiles de viajeros. Derecha: servicios con retraso e incidencias con decisión y coste (listas desplazables). Pie: Menú principal / Reintentar. `ReportPresenter` es el único punto que conoce las claves reales de `DayReport.to_dict()` (`ledger_by_category`, `passengers{}`, `services[]` con `status`/`delay_s`, `incidents[]` con `decision`/`cost_cents`); lista como «con retraso» los servicios cancelados/parciales o con ≥ 5′. |
+
+### Operación (cambios Fase 7)
+
+- Barra superior: `OpsKpiBar` alimenta calidad (0-100), percepción (0-100) y resultado (`RcFormat.eur_compact`, rojo si es negativo) desde `query_indicators()`; se marca «sucio» con `indicators_changed`/`ledger_changed` y se refresca ≤ 4 veces/s. Tendencia ▲▼ solo si la variación ≥ 0,5; micrográfico solo en pantallas anchas (≥ 1500 px lógicos). Botón de menú (48 px) a la derecha.
+- Información al viajero: `OpsInformBlock` (chip SIN INFORMAR ámbar / INFORMADOS verde, texto y botón «Informar a los viajeros» con icono) en el detalle de servicio y en la hoja de decisión; emite `InformPassengersCommand`. Confirmación con `RcToast`.
+- Menú de pausa (`OpsPauseMenu`): Reanudar, Guardar, Configuración y, separado y en rojo, Abandonar jornada con segunda confirmación. Abrirlo pausa y cerrarlo restaura la velocidad.
+- `OpsFlowGlue` (nodo hijo de Operación) agrupa el pegamento con `AppFlow`: menú de pausa, `autosave()`, ir a Configuración, `abandon_day()` y `day_finished` → `finish_day()` (diferido). La pantalla usa siempre `AppFlow.host` (el host cuelga del autoload y sobrevive a los cambios de escena). Si se entra con una jornada ya empezada, el velo ofrece «Reanudar jornada».
+
+### Nuevos componentes y tokens
+
+`RcToggle`, `RcGradeBadge`, `RcMeter`, `RcBarRow`, `RcListRow` (por fin implementado), `RcBullet`, `RcToast`, `RcScreenFrame`; `RcButton` gana `icon_name` (SVG de `assets/icons/`, blancos y teñidos por el tema), `large` (56 px) e `icon_only`; `RcSegmentedControl.segment_width`; `RcKpiTile.show_trend` y `value_state`. Tema: `LabelDisplay`, `LabelTitle`, `LabelKicker`, `LabelBigData`, `PanelRow`, `PanelRowSelected` (borde acento suave 1 px al 45 %, sin glow fuerte). Tokens: `BUTTON_LARGE_H`, `ROW_H`, `ROW_TALL_H`, `MENU_PANEL_W`, `FS_DISPLAY`, `FS_TITLE`.
+
+### Revisión táctil
+
+Todos los botones ≥ 48 px (56 px en menús y pies), filas ≥ 56 px, interruptor con zona de 64×48; las filas seleccionables reaccionan al soltar (no roban el arrastre del scroll) y no hay hover como único affordance. Acciones destructivas (Abandonar) separadas 16 px del resto y con confirmación.
+
+### Capturas
+
+`docs/captures/phase7/<ancho>x<alto>_<etapa>.png` en 1280×720, 1920×1080, 2400×1080 y 1600×720 (2400×1080 y 1600×720 comparten 20:9 → mismo diseño lógico de 1600×720). Etapas: 1_menu, 2_scenario_select, 3_briefing, 4_settings, 5_report_sustituir/cancelar/sin_decidir (jornadas reales simuladas hasta el final con `DayReport.from_session`), 6_ops_en_curso, 7_ops_averia_decision, 8_ops_informados, 9_ops_pausa.

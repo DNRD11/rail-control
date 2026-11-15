@@ -11,6 +11,7 @@ const CAUSE_NONE: StringName = &"NONE"
 const CAUSE_INJECTED: StringName = &"INJECTED"
 const CAUSE_ROTATION_MATERIAL: StringName = &"ROTATION_MATERIAL"
 const CAUSE_ROTATION_STAFF: StringName = &"ROTATION_STAFF"
+const CAUSE_BREAKDOWN: StringName = &"BREAKDOWN"
 
 const MINOR_MAX_S: int = 180
 const MAJOR_MAX_S: int = 900

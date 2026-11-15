@@ -22,7 +22,6 @@
 			"service": "svc_3103",
 			"enabled": true,
 			"section": "sec_cat_zar",
-			"fraction": 0.5,
 			"time": "08:12",
 			"severity": 2
 		}

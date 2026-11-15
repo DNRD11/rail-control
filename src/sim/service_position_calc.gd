@@ -48,7 +48,7 @@ static func compute_at(world: World, service: Service, now: float) -> ServicePos
 		Enums.ServiceStatus.SCHEDULED:
 			_at_station(world, service, 0, pos, ServicePosition.State.NOT_STARTED)
 			return pos
-		Enums.ServiceStatus.TERMINATED, Enums.ServiceStatus.CANCELLED:
+		Enums.ServiceStatus.TERMINATED, Enums.ServiceStatus.CANCELLED, Enums.ServiceStatus.PARTIALLY_CANCELLED:
 			_at_station(world, service, n - 1, pos, ServicePosition.State.FINISHED)
 			return pos
 	var last: int = -1
@@ -68,6 +68,8 @@ static func compute_at(world: World, service: Service, now: float) -> ServicePos
 	var frac: float = 1.0
 	if leg_end > leg_start:
 		frac = clampf((now - float(leg_start)) / float(leg_end - leg_start), 0.0, 1.0)
+	if service.status == Enums.ServiceStatus.HELD:
+		frac = service.held_fraction
 	_in_section(world, service, last, frac, pos)
 	return pos
 

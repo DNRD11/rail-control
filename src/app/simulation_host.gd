@@ -7,6 +7,7 @@ signal clock_ticked(now: int)
 signal speed_changed(speed: int)
 signal service_updated(service_id: StringName)
 signal service_stop_event(service_id: StringName, stop_index: int, kind: StringName)
+signal incident_changed(incident_id: StringName)
 signal day_finished()
 
 var session: SimulationSession = null
@@ -29,6 +30,7 @@ func start(new_session: SimulationSession) -> void:
 	session.speed_changed.connect(_on_speed_changed)
 	session.service_updated.connect(_on_service_updated)
 	session.service_stop_event.connect(_on_service_stop_event)
+	session.incident_changed.connect(_on_incident_changed)
 	session.day_finished.connect(_on_day_finished)
 	set_process(true)
 
@@ -79,7 +81,12 @@ func _disconnect_session() -> void:
 	session.speed_changed.disconnect(_on_speed_changed)
 	session.service_updated.disconnect(_on_service_updated)
 	session.service_stop_event.disconnect(_on_service_stop_event)
+	session.incident_changed.disconnect(_on_incident_changed)
 	session.day_finished.disconnect(_on_day_finished)
+
+
+func _on_incident_changed(incident_id: StringName) -> void:
+	incident_changed.emit(incident_id)
 
 
 func _on_clock_ticked(now: int) -> void:

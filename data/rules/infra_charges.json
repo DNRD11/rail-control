@@ -1,0 +1,12 @@
+{
+	"schema_version": 1,
+	"_comment": "Esquema de cánones FUTUROS (ChargeRule, DATA_MODEL §9). No lo carga el MVP: el canon ordinario vive en economy.json. Mecánica del simulador, no tarifas reales.",
+	"rules": [
+		{ "id": "chg_special_fixed", "applies_to": "SPECIAL_SERVICE", "method": "FIXED", "amount_cents": 150000 },
+		{ "id": "chg_special_km", "applies_to": "SPECIAL_SERVICE", "method": "PER_KM", "amount_cents": 600 },
+		{ "id": "chg_peak_band", "applies_to": "SPECIAL_SERVICE", "method": "PER_TIME_BAND",
+			"time_bands": [{ "from": "07:00", "to": "09:30", "multiplier": 1.5 }] },
+		{ "id": "chg_urgent", "applies_to": "SPECIAL_SERVICE", "method": "SURCHARGE",
+			"conditions": { "notice_below_s": 3600 }, "amount_cents": 50000 }
+	]
+}

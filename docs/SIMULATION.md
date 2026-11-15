@@ -78,22 +78,35 @@ Clasificación del retraso (umbrales en `data/rules/perception.json`): `ON_TIME`
 
 ```
 INCIDENT_TRIGGER → Incident(DETECTED) → servicio HELD en tramo o estación
-   → opciones calculadas con previsualización → AWAITING_DECISION (pausa automática opcional)
-   → Decision (jugador o DECISION_TIMEOUT) → efectos → IN_PROGRESS → RESOLVED → CLOSED (registro)
+   → opciones con previsualización → AWAITING_DECISION
+   → Decision (jugador o tiempo agotado) → efectos → IN_PROGRESS → RESOLVED
 ```
 
-- **Origen**: guionizada en `scenario.json` (`{ "service": "svc_3103", "at_section": "CAT-ZAR", "fraction": 0.4, "repair_s": [1500, 3600] }`) o aleatoria según `probability_per_hour` con el RNG de la sesión.
-- El tiempo de reparación real se sortea al crear la incidencia; el jugador solo ve un **rango** (incertidumbre deliberada).
+`CLOSED` está reservado en el enum (archivo/registro final) y todavía no se usa.
 
-### Opciones
+- **Origen guionizado**: `scenario.json › scripted_incidents` (`id`, `type`, `service`, `section` + `time`, `severity`, `enabled`).
+- **Origen aleatorio**: `scenario.rules.random_incidents` con `probability_per_hour` por tipo. Las tiradas se hacen **al arrancar** la sesión con el RNG con semilla (determinista) y programan `INCIDENT_TRIGGER`.
+- El tiempo real de reparación (`repair_s`) se sortea al crear la incidencia dentro de `[repair_min_s, repair_max_s]` del tipo (1500–3600 s). El jugador y el log solo ven el **rango** (`repair_range_s`).
+- **Retraso al detectar**: el servicio queda detenido y se aplica una cota inferior = `min(reparación mínima, transfer_s)`; el resto del retraso se aplica **al reanudar**. Así la propagación a dependientes es visible desde el principio sin adelantar información oculta.
+- **Tiempo agotado**: si el jugador no decide en `decision_timeout_s` (900 s), se toma `default_option` (`WAIT_REPAIR`) con `Decision.automatic = true`.
+
+### Opciones (implementación Fase 5)
 
 | Opción | Disponible si | Efectos simulados |
 |---|---|---|
-| `WAIT_REPAIR` | siempre | `INCIDENT_RESOLVED` a `now + repair_s` (sorteado); el servicio reanuda con retraso; propagación |
-| `SUBSTITUTE_ROLLING_STOCK` | existe composición/vehículo `RESERVE`/`AVAILABLE` y maquinista disponible | servicio `EMPTY_RUN` de posicionamiento desde la estación de la reserva hasta el punto de la avería (o la siguiente estación), transbordo (`transfer_s`), nueva asignación `source = INCIDENT_REPLACEMENT` para el resto del itinerario, asignación original `REPLACED`; el material averiado pasa a `FAILED` y queda fuera de rotación hasta reparación/retirada; se re-planifica la cadena dependiente |
-| `CANCEL_SERVICE` | siempre | servicio `CANCELLED`/`PARTIALLY_CANCELLED`; viajeros a bordo y pendientes ⇒ `needing_alternative`; material averiado retirado (rescate); servicios dependientes del material quedan **sin composición** y generan aviso de decisión |
+| `WAIT_REPAIR` | siempre | `INCIDENT_RESOLVED` a `detected_at + repair_s`; el servicio reanuda con el retraso restante; propagación a dependientes. Coste `repair_on_route` |
+| `SUBSTITUTE_ROLLING_STOCK` | hay vehículo de reserva con plazas (si no, `unavailable_reason`; `seats_short` informa del déficit) | La reserva trae **su propia tripulación**: el personal del servicio no se reasigna (simplificación MVP). Se crea la composición `cmp_res_<vehículo>`; se traspasan a ella el resto del servicio y **todos los servicios posteriores del material averiado**; las asignaciones originales pasan a `REPLACED`, las nuevas `source = INCIDENT_REPLACEMENT`. El servicio reanuda en `now + posicionamiento + transfer_s`. El material averiado queda `FAILED`. Log `SUBSTITUTION_DISPATCHED` |
+| `CANCEL_SERVICE` | siempre | Servicio `PARTIALLY_CANCELLED` (ya había salido) o `CANCELLED`; viajeros a bordo y pendientes ⇒ `needing_alternative`. Los servicios dependientes pasan a la composición de reserva si esta cubre su estación de salida; si no, se cancelan. Coste de rescate |
 
-En el MVP, si un servicio dependiente se queda sin material, el jugador puede asignarle otra composición disponible o cancelarlo (comandos ya existentes). PAT y servicio especial se añadirán como nuevas opciones sin cambiar el ciclo.
+**Posicionamiento en vacío**: se modela solo como tiempo (`km / positioning_speed_kmh`) y coste (`empty_run_per_km_cents`); **no se crea un `Service` `EMPTY_RUN`** (queda para fases futuras).
+
+**Limitación conocida**: tras cancelar, el retraso previsto ya aplicado a los dependientes no se retrocede (permanece como estimación pesimista).
+
+### Comando y log
+
+`ResolveIncidentCommand(incident_id, option_type)` valida disponibilidad y aplica la decisión. Entradas de log nuevas: `INCIDENT_DETECTED`, `DECISION_TAKEN`, `INCIDENT_RESOLVED`, `INCIDENT_SKIPPED` (disparo ignorado, p. ej. servicio ya terminado o cancelado), `SUBSTITUTION_DISPATCHED`, `SERVICE_CANCELLED`.
+
+Costes de las decisiones: ver [ECONOMY.md §8](ECONOMY.md). PAT y servicio especial se añadirán como nuevas opciones sin cambiar el ciclo.
 
 ## 7. Comandos del jugador
 
@@ -114,3 +127,7 @@ Cada hecho relevante (salida, llegada, paso, retraso, cambio de asignación, inc
 | Semilla | fija por escenario, modificable en ajustes de depuración |
 
 Todos los valores se ajustarán en el equilibrado (fases 5-6).
+
+## Economía y viajeros (Fase 6)
+
+`SimulationSession` conecta `service_updated` e `incident_changed` a `PassengerSystem` y `EconomySystem` (síncrono y determinista) y emite `ledger_changed(entry)` e `indicators_changed()`. `PASSENGER_INFO_SENT` (prioridad 90) lo programa `InformPassengersCommand` a la hora actual y lo procesa `PassengerSystem`. En `DAY_END` se liquidan los servicios sin terminar con horas estimadas. El rango de reparación de la avería de material pasa a 1 200 – 5 400 s. Detalle en [ECONOMY.md](ECONOMY.md).

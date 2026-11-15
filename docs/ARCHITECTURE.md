@@ -42,11 +42,11 @@ Godot 4.7.2 · GDScript con tipado estático · 2D · renderer Mobile · horizon
 | Viajeros | `PassengerSystem` | Cifras agregadas por servicio y afectación | economy-design |
 | Economía | `EconomySystem`, `Ledger` | Costes, ingresos, indemnizaciones | economy-design |
 | Indicadores | `PerceptionSystem`, `QualityTracker` | Calidad, percepción | economy-design |
-| Informe | `DayReportBuilder` | Agrega el log en el informe final | economy-design / rail-sim |
+| Informe | `DayReport` (`src/app`) | Agrega consultas de la sesión en el informe final; nota A-D por `data/rules/report.json` | godot-dev |
 | PAT (futuro) | `PatSystem`, `AlternativeTransportPlan` | Ver DATA_MODEL §8 | — |
 | Infraestructura (futuro) | `InfrastructureManager` | Restricciones, capacidad, autorizaciones | — |
-| Guardado | `SaveService` | Serializar sesión a `user://saves/*.json` | godot-dev |
-| App | `App` (autoload), `SimulationHost` | Navegación, ajustes, puente sim↔escena | godot-dev |
+| Guardado | `SaveGame`, `CommandCodec`, `StateHash` | Guardado determinista en `user://saves/*.json` (semilla + `command_log`, verificado por hash) | godot-dev |
+| App | `AppFlow` (autoload), `SimulationHost`, `Settings`, `ScenarioCatalog`, `DayReport`, `ReportRules` | Navegación, contexto (escenario/sesión/informe), ajustes, catálogo, informe final, puente sim↔escena | godot-dev |
 | UI | tema, componentes, esquema, pantallas | Presentación e interacción | ux-ui |
 
 ### Sistemas y orden de ejecución
@@ -85,8 +85,8 @@ res://
 │  ├─ data/        ScenarioLoader, DataValidator, WorldBuilder
 │  ├─ sim/         SimulationSession, SimClock, EventQueue, SimEvent, commands/
 │  ├─ systems/     movement, assignment, incident, passenger, economy, perception, report
-│  ├─ save/        SaveService
-│  └─ app/         app.gd (autoload), simulation_host.gd
+│  ├─ save/        SaveGame, CommandCodec, StateHash
+│  └─ app/         app_flow.gd (autoload AppFlow), simulation_host.gd, settings, scenario_catalog, day_report, report_rules
 ├─ ui/
 │  ├─ theme/       rc_theme.tres, tokens.gd
 │  ├─ components/  RcPanel, RcButton, RcStatusChip, RcKpiTile, …
@@ -107,7 +107,8 @@ res://
 | Tiempo entero en segundos | Determinismo y comparaciones exactas. |
 | Cola de eventos + estado continuo derivado | Eventos discretos para cambios; la posición se calcula analíticamente, sin «mover» nada cada frame. |
 | Runner de pruebas propio | Evita addons (GUT) cumpliendo «sin dependencias externas»; suficiente para el MVP. |
-| Guardado JSON en `user://` | Sin SQLite; guarda estado + log de comandos (permite reconstrucción determinista). |
+| Guardado JSON en `user://` | Sin SQLite. Guarda `{version, scenario_id, seed, now, commands, hash}`; la carga reconstruye el mundo, reaplica cada comando en su instante (`applied_at`) y compara `StateHash` (reloj, log, libro, indicadores, servicios). Si no coincide, la carga falla con `push_error`. Los comandos nuevos deben registrarse en `CommandCodec`. |
+| Autoload único `AppFlow` | Solo navegación y paso de contexto (`selected_scenario`, `host`, `last_report`, `settings`). Sin `class_name` (chocaría con el autoload). Aloja el `SimulationHost` como hijo para sobrevivir a los cambios de escena. |
 | Un `Theme` + tokens | Consistencia visual y cambios globales sin tocar pantallas. |
 | Resolución base 1280×720, `canvas_items` + `expand` | Interfaz grande y legible en móvil; se adapta a 16:9, 20:9 y 16:10. |
 
@@ -123,3 +124,7 @@ res://
 | Determinismo roto por iteración de diccionarios o floats | Ids ordenados al iterar, enteros en el estado, prueba de hash del log. |
 | Tipografías y licencias | Solo fuentes OFL (IBM Plex) incluidas en el repositorio con su licencia. |
 | Proyecto no versionado (no hay repositorio git) | Recomendado `git init` antes de la fase 2. |
+
+## 6. Flujo de aplicación (Fase 7)
+
+`MAIN_MENU -> SCENARIO_SELECT -> BRIEFING -> OPERATIONS -> REPORT`, con `SETTINGS` accesible desde el menú y la pausa. Pantallas = `res://ui/screens/<n>/<n>_screen.tscn` (`menu`, `scenario_select`, `briefing`, `operations`, `report`, `settings`). API de `AppFlow`: `go(screen)`, `start_new_day()`, `continue_saved()`, `autosave()`, `finish_day()` (construye `last_report`, para el host, borra el autoguardado y va a REPORT), `abandon_day()`. `ScenarioCatalog.list()` alimenta la selección; `ScenarioCatalog.meta(carpeta)` da dificultad y nº de servicios. La nota del informe sale de `data/rules/report.json` (media ponderada calidad/percepción; umbrales descendentes validados al cargar).

@@ -121,7 +121,7 @@ unique_name_in_owner = true
 layout_mode = 2
 title = "Incidencias"
 
-[node name="IncidentsView" type="VBoxContainer" parent="Margin/Root/Middle/IncidentsPanel"]
+[node name="IncidentsView" type="ScrollContainer" parent="Margin/Root/Middle/IncidentsPanel"]
 unique_name_in_owner = true
 layout_mode = 2
 script = ExtResource("8")

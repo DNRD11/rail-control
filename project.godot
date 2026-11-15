@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="Rail Control"
-run/main_scene="res://ui/screens/operations/operations_screen.tscn"
+run/main_scene="res://ui/screens/menu/menu_screen.tscn"
 config/features=PackedStringArray("4.7", "Mobile")
 config/icon="res://icon.svg"
+
+[autoload]
+
+AppFlow="*res://src/app/app_flow.gd"
 
 [display]
 
@@ -35,3 +39,4 @@ theme/custom="res://ui/theme/rc_theme.tres"
 
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true

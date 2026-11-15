@@ -1,0 +1,13 @@
+{
+	"schema_version": 1,
+	"weights": {
+		"quality": 0.5,
+		"perception": 0.5
+	},
+	"grades": [
+		{ "grade": "A", "min_score": 85 },
+		{ "grade": "B", "min_score": 70 },
+		{ "grade": "C", "min_score": 55 },
+		{ "grade": "D", "min_score": 0 }
+	]
+}

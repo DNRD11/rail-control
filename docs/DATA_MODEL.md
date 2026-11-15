@@ -137,7 +137,7 @@ Ordenando las asignaciones de cada recurso por `planned_start`, se obtiene su **
 
 ## 7. Viajeros (agregados)
 
-`ServicePassengerLoad`: `booked: int`, `boardings_by_stop: Dictionary[int, int]`, `alightings_by_stop: Dictionary[int, int]`, y contadores derivados: `affected`, `continuing`, `needing_alternative`, `compensation_eligible`, `informed: bool`, `last_info_time`.
+`ServicePassengerLoad`: `booked: int`, `boardings_by_stop: Dictionary[int, int]`, `alightings_by_stop: Dictionary[int, int]`, y contadores derivados: `affected`, `continuing`, `needing_alternative`, `compensation_eligible`, `carried`, `informed: bool`, `last_info_time`, `affected_since`, `info_incident_id`. Los calcula `PassengerSystem` por parada de bajada (hecho si alcanzada, estimación si pendiente, cancelación si cancelada); `query_service_passengers` devuelve una copia recalculada.
 
 `PassengerInfoMessage`: `id`, `service_id`, `channel` (`ON_BOARD`, `STATION`, `APP`), `template_id`, `time`, `incident_id`.
 
@@ -145,16 +145,20 @@ Ordenando las asignaciones de cada recurso por `planned_start`, se obtiene su **
 
 | Entidad | Campos |
 |---|---|
-| `IncidentType` (datos) | `id` (`ROLLING_STOCK_FAILURE`…), `category` (`ROLLING_STOCK`, `STAFF`, `INFRASTRUCTURE`, `WEATHER`, `SECURITY`, `PASSENGER`), `severity_levels`, `repair_time_range_s`, `probability_per_hour`, `options: Array[option_type]` |
-| `Incident` | `id`, `type_id`, `severity`, `status` (`DETECTED`, `AWAITING_DECISION`, `IN_PROGRESS`, `RESOLVED`, `CLOSED`), `detected_at`, `resolved_at`, `location` (`station_id` o `section_id` + fracción), `affected_service_ids`, `affected_resource_refs`, `options: Array[DecisionOption]`, `decision_id`, `estimated_repair_s` (oculto, se muestra como rango), `log` |
-| `DecisionOption` | `option_type` (`WAIT_REPAIR`, `SUBSTITUTE_ROLLING_STOCK`, `CANCEL_SERVICE`; futuro: `CREATE_PAT`, `REQUEST_SPECIAL_SERVICE`…), `available: bool`, `unavailable_reason`, `preview` (estimaciones mostradas al jugador: retraso, afectados, coste) , `params` (p. ej. vehículo de reserva propuesto) |
-| `Decision` | `id`, `incident_id`, `option_type`, `params`, `time`, `outcome_refs` (eventos, asignaciones y ledger generados) |
+| `IncidentRules` (datos, `incidents.json`) | `types: Dictionary[id, IncidentType]`, `decision_timeout_s`, `default_option`, `positioning_speed_kmh`, `repair_on_route_cents`, `rescue_cents`, `reserve_mobilization_cents`, `empty_run_per_km_cents` |
+| `IncidentType` (datos) | `id`, `category`, `title`, `repair_min_s`, `repair_max_s`, `probability_per_hour`, `options: Array[StringName]` (en JSON: `repair_time_range_s`) |
+| `Incident` | `id`, `type_id`, `severity`, `status` (`DETECTED`, `AWAITING_DECISION`, `IN_PROGRESS`, `RESOLVED`; `CLOSED` reservado), `detected_at`, `resolved_at`, `service_id`, `section_id`, `station_id`, `fraction`, `km`, `stop_index`, `affected_service_ids`, `composition_id`, `vehicle_id`, `resume_status`, `repair_min_s`/`repair_max_s` (rango visible), `repair_s` (oculto), `projected_s`, `options: Array[DecisionOption]`, `decision`, `scripted`, `timeout_event` |
+| `DecisionOption` | `option_type` (`WAIT_REPAIR`, `SUBSTITUTE_ROLLING_STOCK`, `CANCEL_SERVICE`; futuro: `CREATE_PAT`, `REQUEST_SPECIAL_SERVICE`…), `available`, `unavailable_reason`, `preview: OptionPreview`, `params` |
+| `OptionPreview` | `own_delay_min_s`, `own_delay_max_s`, `dependents: Array[Dictionary]`, `cancelled_service_ids`, `affected_passengers`, `needing_alternative`, `cost_cents`, `reserve_vehicle_id`, `seats_short`, `resume_at` |
+| `Decision` | `id`, `incident_id`, `option_type`, `params`, `time`, `automatic`, `cost_lines: Array[Dictionary]` (`category`, `key`, `amount_cents` negativo; las vuelca el `EconomySystem` en la Fase 6), `cancelled_service_ids`, `replaced_assignment_ids`, `new_assignment_ids`, `needing_alternative`, `resume_at` |
 
 Los efectos de una decisión se expresan como **comandos y eventos** ordinarios (nueva asignación, retraso, cancelación, entradas de ledger), para que cualquier tipo de incidencia futura reutilice los mismos mecanismos.
 
 ## 9. Economía
 
-`LedgerEntry`: `id`, `time`, `category` (ver [ECONOMY.md](ECONOMY.md)), `amount_cents: int` (positivo = ingreso, negativo = coste), `ref_type`, `ref_id`, `description_key`, `details: Dictionary`.
+`Ledger` (`entries`, `add`, `total_cents`, `total_by_category`, `entries_for_ref`) y `LedgerEntry` (`ref_type` = `SERVICE` | `INCIDENT` | `PAT`): `id`, `time`, `category` (ver [ECONOMY.md](ECONOMY.md)), `amount_cents: int` (positivo = ingreso, negativo = coste), `ref_type`, `ref_id`, `description_key`, `details: Dictionary`.
+
+Reglas (Fase 6, en `World`): `EconomyRules` (`economy.json`), `CompensationRules` (`compensation.json`), `PerceptionRules` (`perception.json`). `Indicators`: `quality`, `perception`, `result_cents`, `passengers_carried`, `affected`, `compensated`, `needing_alternative`, `lost_revenue_cents`. `infra_charges.json` es solo esquema futuro (no se carga).
 
 `ChargeRule` (canon / tarifas configurables, futuro): `id`, `applies_to` (`SPECIAL_SERVICE`, `COMMERCIAL`, …), `method` (`FIXED`, `PER_KM`, `PER_SECTION`, `PER_TIME_BAND`, `SURCHARGE`), `amount`, `section_ids`, `time_bands`, `conditions`.
 

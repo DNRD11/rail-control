@@ -30,6 +30,12 @@ signal manage_pressed
 		action_text = value
 		_refresh()
 
+## Sin acción (incidencia ya decidida): se oculta el botón.
+@export var show_action: bool = true:
+	set(value):
+		show_action = value
+		_refresh()
+
 var _chip: RcStatusChip
 var _time_label: Label
 var _title_label: Label
@@ -100,6 +106,7 @@ func _refresh() -> void:
 	_title_label.text = title
 	_detail_label.text = detail
 	_button.text = action_text
+	_button.visible = show_action
 	_overlay.color = RcTokens.state_color(severity)
 	_overlay.queue_redraw()
 

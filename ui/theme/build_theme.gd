@@ -42,6 +42,10 @@ func _labels(theme: Theme) -> void:
 	_label_variation(theme, &"LabelDataMuted", RcTokens.font_mono(), RcTokens.FS_SMALL, RcTokens.TEXT_SECONDARY)
 	_label_variation(theme, &"LabelCode", RcTokens.font_mono_medium(), 28, RcTokens.TEXT_PRIMARY)
 	_label_variation(theme, &"LabelClock", RcTokens.font_mono_medium(), RcTokens.FS_CLOCK, RcTokens.TEXT_PRIMARY)
+	_label_variation(theme, &"LabelDisplay", RcTokens.font_text_semibold(), RcTokens.FS_DISPLAY, RcTokens.TEXT_PRIMARY)
+	_label_variation(theme, &"LabelTitle", RcTokens.font_text_semibold(), RcTokens.FS_TITLE, RcTokens.TEXT_PRIMARY)
+	_label_variation(theme, &"LabelKicker", RcTokens.font_title(), RcTokens.FS_SMALL, RcTokens.ACCENT)
+	_label_variation(theme, &"LabelBigData", RcTokens.font_mono_medium(), 30, RcTokens.TEXT_PRIMARY)
 
 
 func _panel_variation(theme: Theme, name: StringName, box: StyleBoxFlat, margin_h: int, margin_v: int) -> void:
@@ -65,9 +69,24 @@ func _panels(theme: Theme) -> void:
 	var raised: StyleBoxFlat = RcTokens.make_box(RcTokens.BG_RAISED, RcTokens.RADIUS_CARD,
 			RcTokens.with_alpha(RcTokens.STROKE_STRONG, 0.5), 1)
 	_panel_variation(theme, &"PanelRaised", raised, RcTokens.SP_3, RcTokens.SP_3)
+	var overlay: StyleBoxFlat = RcTokens.make_box(RcTokens.BG_PANEL, RcTokens.RADIUS_PANEL,
+			RcTokens.with_alpha(RcTokens.STROKE_STRONG, 0.9), 1)
+	overlay.shadow_color = Color(0, 0, 0, 0.55)
+	overlay.shadow_size = 28
+	overlay.shadow_offset = Vector2(0, 8)
+	_panel_variation(theme, &"PanelSheet", overlay, RcTokens.SP_4, RcTokens.SP_4)
 	var tile: StyleBoxFlat = RcTokens.make_box(RcTokens.BG_RAISED, RcTokens.RADIUS_CARD,
 			RcTokens.with_alpha(RcTokens.STROKE_STRONG, 0.4), 1)
 	_panel_variation(theme, &"PanelTile", tile, RcTokens.SP_3, RcTokens.SP_1)
+	# Fila seleccionable (RcListRow): reposo, seleccionada (borde acento) y atenuada.
+	var row: StyleBoxFlat = RcTokens.make_box(RcTokens.BG_RAISED, RcTokens.RADIUS_CARD,
+			RcTokens.with_alpha(RcTokens.STROKE_STRONG, 0.45), 1)
+	_panel_variation(theme, &"PanelRow", row, RcTokens.SP_3, RcTokens.SP_2)
+	var row_sel: StyleBoxFlat = RcTokens.make_box(RcTokens.with_alpha(RcTokens.ACCENT, 0.12), RcTokens.RADIUS_CARD,
+			RcTokens.with_alpha(RcTokens.ACCENT, 0.45), 1)
+	row_sel.shadow_color = RcTokens.with_alpha(RcTokens.ACCENT, 0.08)
+	row_sel.shadow_size = 6
+	_panel_variation(theme, &"PanelRowSelected", row_sel, RcTokens.SP_3, RcTokens.SP_2)
 	var plain: StyleBoxFlat = RcTokens.make_box(Color(0, 0, 0, 0), 0)
 	theme.set_stylebox("panel", "PanelContainer", plain)
 
@@ -125,6 +144,17 @@ func _buttons(theme: Theme) -> void:
 	theme.set_color("font_pressed_color", "RcButtonGhost", RcTokens.ACCENT)
 	theme.set_color("font_hover_pressed_color", "RcButtonGhost", RcTokens.ACCENT)
 	theme.set_color("font_disabled_color", "RcButtonGhost", RcTokens.TEXT_MUTED)
+	# Peligro: contorno rojo (acciones destructivas, p. ej. cancelar un servicio).
+	var alert: Color = RcTokens.STATE_ALERT
+	theme.set_type_variation(&"RcButtonDanger", &"Button")
+	_button_styles(theme, &"RcButtonDanger",
+		RcTokens.make_box(RcTokens.with_alpha(alert, 0.10), r, RcTokens.with_alpha(alert, 0.7), 1),
+		RcTokens.make_box(RcTokens.with_alpha(alert, 0.22), r, alert, 1),
+		RcTokens.make_box(RcTokens.with_alpha(alert, 0.34), r, alert, 1),
+		RcTokens.make_box(RcTokens.with_alpha(RcTokens.BG_RAISED, 0.5), r, RcTokens.STROKE_SUBTLE, 1))
+	for color_name: String in ["font_color", "font_hover_color", "font_pressed_color", "font_hover_pressed_color"]:
+		theme.set_color(color_name, "RcButtonDanger", alert)
+	theme.set_color("font_disabled_color", "RcButtonDanger", RcTokens.TEXT_MUTED)
 
 
 func _misc(theme: Theme) -> void:
@@ -139,5 +169,24 @@ func _misc(theme: Theme) -> void:
 	vline.vertical = true
 	theme.set_stylebox("separator", "VSeparator", vline)
 	theme.set_constant("separation", "VSeparator", 1)
+	# Barra de desplazamiento fina (paneles con scroll táctil).
+	var grabber: StyleBoxFlat = RcTokens.make_box(RcTokens.with_alpha(RcTokens.STROKE_STRONG, 0.9), 3)
+	grabber.content_margin_left = 3
+	grabber.content_margin_right = 3
+	var grabber_on: StyleBoxFlat = RcTokens.make_box(RcTokens.with_alpha(RcTokens.ACCENT, 0.6), 3)
+	grabber_on.content_margin_left = 3
+	grabber_on.content_margin_right = 3
+	theme.set_stylebox("scroll", "VScrollBar", RcTokens.make_box(Color(0, 0, 0, 0), 3))
+	theme.set_stylebox("scroll_focus", "VScrollBar", RcTokens.make_box(Color(0, 0, 0, 0), 3))
+	theme.set_stylebox("grabber", "VScrollBar", grabber)
+	theme.set_stylebox("grabber_highlight", "VScrollBar", grabber_on)
+	theme.set_stylebox("grabber_pressed", "VScrollBar", grabber_on)
+	# Iconos de botón: mismo color que el texto en cada estado (los SVG son blancos).
+	for type_name: String in ["Button", "RcButtonPrimary", "RcButtonGhost", "RcButtonDanger"]:
+		theme.set_constant("h_separation", type_name, RcTokens.SP_2 + 2)
+		theme.set_color("icon_disabled_color", type_name, RcTokens.TEXT_MUTED)
+		for state: String in ["normal", "hover", "pressed", "hover_pressed", "focus"]:
+			theme.set_color("icon_%s_color" % state, type_name, theme.get_color("font_%s_color" % state, type_name)
+					if state != "normal" and state != "focus" else theme.get_color("font_color", type_name))
 	theme.set_constant("separation", "VBoxContainer", RcTokens.SP_2)
 	theme.set_constant("separation", "HBoxContainer", RcTokens.SP_2)

@@ -39,6 +39,12 @@ func assert_ne(actual: Variant, unexpected: Variant, message: String = "") -> vo
 		_fail("no se esperaba %s. %s" % [var_to_str(unexpected), message])
 
 
+func assert_near(actual: float, expected: float, tolerance: float = 0.001, message: String = "") -> void:
+	assertions += 1
+	if absf(actual - expected) > tolerance:
+		_fail("esperado ~%s (±%s) pero se obtuvo %s. %s" % [expected, tolerance, actual, message])
+
+
 func assert_has_code(report: ValidationReport, code: StringName, message: String = "") -> void:
 	assertions += 1
 	if not report.has_code(code):

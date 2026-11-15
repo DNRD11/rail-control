@@ -11,6 +11,9 @@ var stops: Array[ServiceStop] = []
 var status: Enums.ServiceStatus = Enums.ServiceStatus.SCHEDULED
 var incident_ids: Array[StringName] = []
 var origin_ref: String = ""
+## Mientras está HELD: fracción congelada del tramo en curso y hora de la detención.
+var held_fraction: float = 0.0
+var held_since: int = SimTime.NONE
 
 
 ## Número de segmentos (tramos entre puntos consecutivos del itinerario).
@@ -32,3 +35,7 @@ func stop_index_of(station_id: StringName) -> int:
 		if stops[i].station_id == station_id:
 			return i
 	return -1
+
+
+func is_cancelled() -> bool:
+	return status == Enums.ServiceStatus.CANCELLED or status == Enums.ServiceStatus.PARTIALLY_CANCELLED

@@ -4,6 +4,10 @@ extends VBoxContainer
 ## (Dictionary construido por OperationsPresenter): `show_service` cambia de servicio con una
 ## transición de 240 ms; `update_service` refresca los datos en vivo sin animar.
 
+signal inform_requested
+
+var _inform: OpsInformBlock
+var _inform_section: Label
 var _code_label: Label
 var _route_label: Label
 var _delay_label: Label
@@ -80,6 +84,12 @@ func _ready() -> void:
 	var pax_row: HBoxContainer = _info_row("Viajeros", "")
 	_pax_value = pax_row.get_child(1) as Label
 	_body.add_child(pax_row)
+	_inform_section = _section("Información al viajero")
+	_inform_section.visible = false
+	_body.add_child(_inform_section)
+	_inform = OpsInformBlock.new()
+	_inform.inform_pressed.connect(func() -> void: inform_requested.emit())
+	_body.add_child(_inform)
 
 
 func _section(text: String) -> Label:
@@ -104,6 +114,16 @@ func _info_row(key: String, value_text: String, value_variation: StringName = &"
 	value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	row.add_child(value)
 	return row
+
+
+## Estado de la información a los viajeros del servicio mostrado (OpsIncidentPresenter.inform_model).
+func set_inform(model: Dictionary) -> void:
+	_inform.set_model(model)
+	_inform_title_visible(bool(model.get("visible", false)))
+
+
+func _inform_title_visible(on: bool) -> void:
+	_inform_section.visible = on
 
 
 func clear() -> void:

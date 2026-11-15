@@ -10,13 +10,19 @@ signal selected_changed(index: int)
 		options = value
 		update_minimum_size()
 		queue_redraw()
+## Ancho de cada segmento (48 para velocidad; mayor para etiquetas de texto).
+@export var segment_width: float = 48.0:
+	set(value):
+		segment_width = value
+		_hl_x = _segment_x(_selected)
+		update_minimum_size()
+		queue_redraw()
 @export var selected: int = 1:
 	set(value):
 		_set_index(value, false)
 	get:
 		return _selected
 
-const SEG_W := 48.0
 const PAD := 4.0
 const HEIGHT := 48.0
 
@@ -43,11 +49,11 @@ func _ready() -> void:
 
 
 func _get_minimum_size() -> Vector2:
-	return Vector2(options.size() * SEG_W + PAD * 2.0, HEIGHT)
+	return Vector2(options.size() * segment_width + PAD * 2.0, HEIGHT)
 
 
 func _segment_x(index: int) -> float:
-	return PAD + index * SEG_W
+	return PAD + index * segment_width
 
 
 func select(index: int) -> void:
@@ -91,7 +97,7 @@ func _set_flash(value: float) -> void:
 func _gui_input(event: InputEvent) -> void:
 	var mb := event as InputEventMouseButton
 	if mb != null and mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT:
-		var index: int = int((mb.position.x - PAD) / SEG_W)
+		var index: int = int((mb.position.x - PAD) / segment_width)
 		select(index)
 		accept_event()
 
@@ -99,13 +105,13 @@ func _gui_input(event: InputEvent) -> void:
 func _draw() -> void:
 	draw_style_box(_bg_box, Rect2(Vector2.ZERO, size))
 	var seg_h: float = size.y - PAD * 2.0
-	var hl_rect := Rect2(Vector2(_hl_x, PAD), Vector2(SEG_W, seg_h))
+	var hl_rect := Rect2(Vector2(_hl_x, PAD), Vector2(segment_width, seg_h))
 	_hl_box.bg_color = RcTokens.with_alpha(RcTokens.ACCENT, 0.16 + 0.18 * _flash)
 	draw_style_box(_hl_box, hl_rect)
 	for i: int in options.size():
 		var active: bool = i == _selected
 		var col: Color = RcTokens.ACCENT if active else RcTokens.TEXT_SECONDARY
-		var center := Vector2(_segment_x(i) + SEG_W * 0.5, size.y * 0.5)
+		var center := Vector2(_segment_x(i) + segment_width * 0.5, size.y * 0.5)
 		if options[i] == "pause":
 			RcDraw.pause(self, center, 16.0, col)
 		else:

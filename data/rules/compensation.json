@@ -1,0 +1,9 @@
+{
+	"schema_version": 1,
+	"tiers": [
+		{ "min_delay_s": 1800, "percent": 25 },
+		{ "min_delay_s": 3600, "percent": 50 },
+		{ "min_delay_s": 5400, "percent": 100 }
+	],
+	"cancellation_percent": 100
+}

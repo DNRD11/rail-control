@@ -44,6 +44,31 @@ func next_pending_index(s: Service) -> int:
 	return int(ev.get("index", -1))
 
 
+## Detiene el servicio (avería): congela su posición y anula su evento pendiente.
+func hold(s: Service, session: SimulationSession) -> void:
+	s.status = Enums.ServiceStatus.HELD
+	reschedule(s, session)
+	session.service_updated.emit(s.id)
+
+
+## Reanuda un servicio detenido en el estado indicado y reprograma su próximo evento.
+func release(s: Service, status: Enums.ServiceStatus, session: SimulationSession) -> void:
+	s.status = status
+	s.held_since = SimTime.NONE
+	reschedule(s, session)
+	session.service_updated.emit(s.id)
+
+
+## Cancela el servicio: anula su evento pendiente y marca los puntos pendientes como cancelados.
+func cancel(s: Service, partial: bool, session: SimulationSession) -> void:
+	s.status = Enums.ServiceStatus.PARTIALLY_CANCELLED if partial else Enums.ServiceStatus.CANCELLED
+	for st: ServiceStop in s.stops:
+		if st.status == Enums.StopStatus.PENDING:
+			st.status = Enums.StopStatus.CANCELLED
+	reschedule(s, session)
+	session.service_updated.emit(s.id)
+
+
 ## Reprograma el evento pendiente del servicio si su hora estimada ha cambiado.
 func reschedule(s: Service, session: SimulationSession) -> void:
 	var ev: Dictionary = _next_event(s)

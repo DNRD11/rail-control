@@ -202,7 +202,7 @@ func _draw_stations() -> void:
 			var text: String = eta[0]
 			var col: Color = RcTokens.state_color(eta[1])
 			var w: float = RcDraw.text_width(RcTokens.font_mono_medium(), text, NAME_FONT) + 16.0
-			var rect := Rect2(Vector2(x - w * 0.5, top - 30.0), Vector2(w, 22.0))
+			var rect := Rect2(Vector2(clampf(x - w * 0.5, 0.0, maxf(size.x - w, 0.0)), top - 30.0), Vector2(w, 22.0))
 			draw_style_box(RcTokens.make_box(RcTokens.with_alpha(col, 0.14), RcTokens.RADIUS_CHIP, RcTokens.with_alpha(col, 0.6), 1), rect)
 			RcDraw.text_center(self, RcTokens.font_mono_medium(), text, rect.get_center(), NAME_FONT, col)
 
@@ -288,7 +288,7 @@ func _draw_chain() -> void:
 		var to_y: float = _cap_bottom() + 6.0
 		draw_dashed_line(Vector2(cx, from_y), Vector2(cx, to_y), RcTokens.with_alpha(RcTokens.ACCENT, 0.85), 2.0, 2.0)
 		var w: float = RcDraw.text_width(RcTokens.font_mono_medium(), service.chain_label, NAME_FONT) + 16.0
-		var rect := Rect2(Vector2(cx - w * 0.5, to_y), Vector2(w, 24.0))
+		var rect := Rect2(Vector2(clampf(cx - w * 0.5, 0.0, maxf(size.x - w, 0.0)), to_y), Vector2(w, 24.0))
 		draw_style_box(RcTokens.make_box(RcTokens.with_alpha(RcTokens.ACCENT, 0.12), RcTokens.RADIUS_CHIP,
 				RcTokens.with_alpha(RcTokens.ACCENT, 0.7), 1), rect)
 		RcDraw.text_center(self, RcTokens.font_mono_medium(), service.chain_label, rect.get_center(), NAME_FONT, RcTokens.ACCENT)

@@ -69,7 +69,7 @@ static func _is_current(s: Service, a: ResourceAssignment) -> bool:
 	match s.status:
 		Enums.ServiceStatus.SCHEDULED:
 			return a.covers_segment(0)
-		Enums.ServiceStatus.TERMINATED, Enums.ServiceStatus.CANCELLED:
+		Enums.ServiceStatus.TERMINATED, Enums.ServiceStatus.CANCELLED, Enums.ServiceStatus.PARTIALLY_CANCELLED:
 			return false
 	var last: int = last_reached(s)
 	if last < 0:

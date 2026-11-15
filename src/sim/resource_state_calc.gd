@@ -61,7 +61,7 @@ static func _resource(world: World, type: Enums.ResourceType, rid: StringName, h
 	var next: ResourceAssignment = null
 	for a: ResourceAssignment in list:
 		var s: Service = world.services.get(a.service_id) as Service
-		if s == null or s.status == Enums.ServiceStatus.CANCELLED or a.to_stop_index >= s.stops.size():
+		if s == null or s.is_cancelled() or a.to_stop_index >= s.stops.size():
 			continue
 		var from_st: ServiceStop = s.stops[a.from_stop_index]
 		var to_st: ServiceStop = s.stops[a.to_stop_index]

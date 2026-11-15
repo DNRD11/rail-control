@@ -1,0 +1,19 @@
+{
+	"schema_version": 1,
+	"base": 75,
+	"delay_tolerance_s": 180,
+	"quality_scores": {
+		"ON_TIME": 100,
+		"MINOR": 85,
+		"MAJOR": 65,
+		"SEVERE": 30,
+		"CANCELLED": 0
+	},
+	"delay_penalty_per_1000_pax_min": 0.3,
+	"cancel_penalty_per_1000_pax": 90,
+	"no_info_penalty_per_1000_pax": 25,
+	"early_info_bonus_per_1000_pax": 15,
+	"continuity_bonus_per_1000_pax": 10,
+	"info_window_s": 600,
+	"late_info_factor": 0.5
+}
